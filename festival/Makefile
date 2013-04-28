@@ -1,0 +1,9 @@
+FESTIVAL_FILES=festival.scm
+FESTIVAL_USER=root
+FESTIVAL_GROUP=root
+FESTIVAL_FILEMODE=0640
+FESTIVAL_ETC=/etc/
+
+install_asterisk: $(FESTIVAL_FILES)
+	for file in $(FESTIVAL_FILES); do install -m $(FESTIVAL_FILEMODE) -o $(FESTIVAL_USER) -g $(FESTIVAL_GROUP) $$file $(FESTIVAL_ETC); done
+	

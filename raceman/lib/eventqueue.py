@@ -1,4 +1,5 @@
 from circuits.core import Component,Event,handler
+from raceman.lib.rmqueue import RMQueue,RMQItem
 import Queue
 
 
@@ -28,13 +29,13 @@ class EventQueue(Component):
     """Event Queue"""
     def __init__(self,*args,**kwargs):
         super(EventQueue,self).__init__(args,kwargs)
-        self._equeue=Queue.PriorityQueue()
+        self._equeue=RMQueue()
 
 
     @handler("eqenqueueevent")
     def _on_enqueueevent(self,_event,_priority):
         try:
-            self._equeue.put((_priority,_event))
+            self._equeue.put_nowait(RMQItem(_event,priority=_priority))
             self.fireEvent(EQHaveEvent(_event,_priority))
         except Queue.Full:
             self.fireEvent(EQFull())
@@ -48,8 +49,8 @@ class EventQueue(Component):
     @handler("eqhandlerengaged")
     def _on_eqhandlerengaged(self,*args,**kwargs):
         try:
-            (_priority,_event)=self._equeue.get()
-            self.fireEvent(_event)
+            item=self._equeue.get_nowait()
+            self.fireEvent(item.value)
             self._equeue.task_done()
         except Queue.Empty:
             self.fireEvent(EQEmpty())

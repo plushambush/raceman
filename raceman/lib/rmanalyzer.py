@@ -1,4 +1,4 @@
-from circuits.core import Component,Event,handler
+from circuits.core import Component,Event,handler,Timer
 import datetime
 
 RM_PRIO_OOB=0
@@ -22,6 +22,9 @@ class RMInfoTrackSelected(Event):
 class RMInfoConnected(Event):
     """Connected to the server"""
 
+class RMInfoDisconnected(Event):
+    """Disconnected from the server"""
+
 class RMInfoRaceWaiting(Event):
     """Waiting fir race start"""
 
@@ -37,6 +40,9 @@ class RMInfoRaceNoRace(Event):
 class RMInfoRaceNoData(Event):
     """No data about race"""
 
+class RMTimerNoRaceData(Event):
+    """Server not sending data"""
+
 
 class RMAnalyzer(Component):
     """Analyze RMEvent* events and decide what race event user should hear"""
@@ -47,6 +53,7 @@ class RMAnalyzer(Component):
         self._targetkart=None
         self._racestatus=None
         self._racestatustime=None
+        self._datatimer=Timer(s=20,e=RMTimerNoRaceData(),persist=True,c="rmtimernoracedata").register(self)
 
 
     @handler("rmeventkartlap")
@@ -67,9 +74,17 @@ class RMAnalyzer(Component):
         self.fireEvent(RMInfoConnected(rmprio=RM_PRIO_OOB))
 
 
+    @handler("disconnected")
+    def _disconnected(self,*args,**kwargs):
+        self.fireEvent(RMInfoDisconnected(rmprio=RM_PRIO_OOB))
+
+
+    @handler("rmeventheartbeat")
+    def _rechargedatatimer(self):
+        self._datatimer.reset()
+
     @handler("rmeventheartbeat")
     def _heartbeat(self,lapsToGo,timeToGo,currentTime,sessionTime,flagStatus):
-
         if flagStatus=="Green":
             if sessionTime<>"00:00:00":
                 status="RACE"
@@ -79,17 +94,24 @@ class RMAnalyzer(Component):
             status="FINISH"
         else:
             status="NORACE"
-        
+
+        self._updateracestatus(status)
+
+    @handler("rmtimernoracedata")
+    def _rmtimernoracedata(self,*args,**kwargs):
+        self.fireEvent(RMInfoRaceNoData(rmprio=RM_PRIO_LOW))
+
+    def _updateracestatus(self,status):
         if status<>self._racestatus:
             self._racestatus=status
             self._racestatustime=datetime.datetime.now()
             self._tellracestatus(status,RM_PRIO_HIGH)
         elif (datetime.datetime.now()-self._racestatustime)>datetime.timedelta(minutes=1) and self._racestatus<>"RACE":
             self._racestatustime=datetime.datetime.now()
-            self._tellracestatus(self._racestatus,RM_PRIO_LOW)
+            self._tellracestatus(self._racestatus,RM_PRIO_LOW)        
 
     def _tellracestatus(self,status,prio):
-        statevents={'WAITING':RMInfoRaceWaiting,'RACE':RMInfoRaceGoing,'FINISH':RMInfoRaceFinish,'NORACE':RMInfoRaceNoRace, 'NODATA':RMInfoRaceNoData}    
+        statevents={'WAITING':RMInfoRaceWaiting,'RACE':RMInfoRaceGoing,'FINISH':RMInfoRaceFinish,'NORACE':RMInfoRaceNoRace}    
         event=statevents[status]
         self.fireEvent(event(rmprio=prio))
         

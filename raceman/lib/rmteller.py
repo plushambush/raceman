@@ -22,6 +22,10 @@ class RMTeller(Component):
     def _connected(self,*args,**kwargs):
         self.fireEvent(RMTellSayMessage(u"   Установлено соединение с сервером",kwargs['rmprio']))
 
+    @handler("rminfodisconnected")
+    def _disconnected(self,*args,**kwargs):
+        self.fireEvent(RMTellSayMessage(u"   Соединение с сервером разорвано",kwargs['rmprio']))
+
     @handler("rminfotrackselected")
     def _rminfotrackselected(self,track, *args,**kwargs):
         self.fireEvent(RMTellSayMessage(u"   Добро пожаловать на трэк   %s   " % track,kwargs['rmprio']))
@@ -48,5 +52,5 @@ class RMTeller(Component):
 
     @handler("rminforacenodata")
     def _rminforacenodata(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   С сервера на поступает данных",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   С сервера не поступают данные",kwargs['rmprio']))
 

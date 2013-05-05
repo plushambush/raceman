@@ -53,7 +53,8 @@ class RMDecoder(Component):
         LapTime
         sessionTime
     """
-    self.push(RMEventKartLap(kartId=args[0],lapTime=RacingTime.fromstr(args[1]),sessionTime=RacingTime.fromstr(args[2])))
+    if args[1]<>"00:00:00":
+    	self.push(RMEventKartLap(kartId=args[0],lapTime=RacingTime.fromstr(args[1]),sessionTime=RacingTime.fromstr(args[2])))
 
 
   def _interpret_SP(self,*args,**kwargs):

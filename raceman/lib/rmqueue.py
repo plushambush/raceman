@@ -1,13 +1,10 @@
 from Queue import Queue
 import heapq
 import itertools
-
-RMQ_PRIO_HIGH=-1
-RMQ_PRIO_NORMAL=0
-RMQ_PRIO_LOW=1
+from raceman.lib.prio import *
 
 class RMQItem(object):
-    def __init__(self,value,priority=RMQ_PRIO_NORMAL,type=None,obsolete=False):
+    def __init__(self,value,priority=RM_PRIO_NORMAL,type=None,obsolete=False):
         self.priority=priority
         self.seq=None
         self.value=value

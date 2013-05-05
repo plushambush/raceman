@@ -40,8 +40,14 @@ class Manager(Component):
     def _agistartupcomplete(self,agiarg):
         self._agiarg=agiarg
         try:
-            self.fireEvent(RMAnalyzerTarget(agiarg['agi_arg_1'],config[agiarg['agi_arg_1']]['park'][agiarg['agi_arg_2']][agiarg['agi_arg_3']]))
-            self.fireEvent(Connect(config[agiarg['agi_arg_1']]['streamip'],config[agiarg['agi_arg_1']]['streamport'],channels="rminput"))
+			_track=agiarg['agi_arg_1']
+			_class=agiarg['agi_arg_2']
+			_kart=agiarg['agi_arg_3']
+			track=config[_track]['name']
+			kart=config[_track]['park'][_class][_kart]['match']
+			kartname=config[_track]['park'][_class][_kart]['name']
+			self.fireEvent(RMAnalyzerTarget(track,kart,kartname))
+			self.fireEvent(Connect(config[_track]['streamip'],config[_track]['streamport'],channels="rminput"))
         except AttributeError:
             pass
 

@@ -15,42 +15,51 @@ class RMTeller(Component):
     @handler("rminfokartlap")
     def _rmracelap(self,kartId,lapTime,sessionTime,*args,**kwargs):
         self.fireEvent(RMTellPlayFile("beep",kwargs['rmprio']))
-        self.fireEvent(RMTellSayMessage(u"   Время круга   %s  " % lapTime.tostr(compact=True,tosay=True),kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Время круга   %s.  " % lapTime.tostr(compact=True,tosay=True),kwargs['rmprio']))
 
 
     @handler("rminfoconnected")
     def _connected(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Установлено соединение с сервером",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Установлено соединение с сервером.",kwargs['rmprio']))
 
     @handler("rminfodisconnected")
     def _disconnected(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Соединение с сервером разорвано",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Соединение с сервером разорвано.",kwargs['rmprio']))
 
     @handler("rminfotrackselected")
     def _rminfotrackselected(self,track, *args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Добро пожаловать на трэк   %s   " % track,kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Добро пожаловать на трэк   %s." % track,kwargs['rmprio']))
 
     @handler("rminfokartselected")
     def _rminfokartselected(self,kart,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Установлено слежение за +картом   %s   " % kart,kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Установлено слежение за +каартом   %s." % kart,kwargs['rmprio']))
 
     @handler("rminforacewaiting")
     def _rminforacewaiting(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Ожидаем на+чала гонки",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Ожидаем на+чаала гонки.",kwargs['rmprio']))
 
     @handler("rminforacegoing")
     def _rminforacegoing(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Гонка началась",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Гонка началась.",kwargs['rmprio']))
 
     @handler("rminforacefinish")
     def _rminforacefinish(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Финиш гонки",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   +Финиш гонки.",kwargs['rmprio']))
 
     @handler("rminforacenorace")
     def _rminforacenorace(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   Гонка закончена",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   Гонка закончена.",kwargs['rmprio']))
 
     @handler("rminforacenodata")
     def _rminforacenodata(self,*args,**kwargs):
-        self.fireEvent(RMTellSayMessage(u"   С сервера не поступают данные",kwargs['rmprio']))
+        self.fireEvent(RMTellSayMessage(u"   С сервера не поступают данные.",kwargs['rmprio']))
+
+
+    @handler("rminfokartbestlap")
+    def _rminfokartbestlap(self,*args,**kwargs):
+        self.fireEvent(RMTellSayMessage(u"   Установлено лучшее время.",kwargs['rmprio']))
+
+    @handler("rminfokartlostbestlap")
+    def _rminfokartlostbestlap(self,*args,**kwargs):
+        self.fireEvent(RMTellSayMessage(u"   Потеряно лучшее время.",kwargs['rmprio']))
 

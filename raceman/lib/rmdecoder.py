@@ -9,11 +9,18 @@ class RMEventKartLap(Event):
     """J event: kart passes finish line"""
 
 
+class RMEventKartPlaceTime(Event):
+    """SP event: kart place (by time)"""
+
+
 class RMEventUnknown(Event):
   """Unknown command  received from the stream, cannot decode"""
 
 class RMDecoder(Component):
   """Decoder of the data received from server"""
+
+
+
 
   @handler("rmstreamevent")
   def _rmstreamevent(self,*args,**kwargs):
@@ -49,3 +56,12 @@ class RMDecoder(Component):
     self.push(RMEventKartLap(kartId=args[0],lapTime=RacingTime.fromstr(args[1]),sessionTime=RacingTime.fromstr(args[2])))
 
 
+  def _interpret_SP(self,*args,**kwargs):
+    """ interpret SP command
+    $SP,2,"10",1,"00:00:45.087",35930.
+    place
+    kartId
+    lapNo
+    lapTime
+    unk1"""
+    self.push(RMEventKartPlaceTime(int(args[0]), unicode(args[1]), int(args[2]), RacingTime.fromstr(args[3]),args[4]))

@@ -13,6 +13,13 @@ class RMAnalyzerTarget(Event):
 class RMInfoKartLap(Event):
     """Target kart finished lap"""
 
+
+class RMInfoKartBestLap(Event):
+    """Target kart set best lap"""
+
+class RMInfoKartLostBestLap(Event):
+    """Kart lost best lap"""
+
 class RMInfoKartSelected(Event):
     """Kart selected as target"""
 
@@ -53,12 +60,17 @@ class RMAnalyzer(Component):
         self._targetkart=None
         self._racestatus=None
         self._racestatustime=None
+        self._racebestlap=None
+        self._racebesttime=None
+        self._racehavebesttime=False
         self._datatimer=Timer(s=20,e=RMTimerNoRaceData(),persist=True,c="rmtimernoracedata").register(self)
 
+    def _isTargetKart(self,kartId):
+        return (self._targetkart is not None) and (self._targetkart==kartId)
 
     @handler("rmeventkartlap")
     def _rmeventkartlap(self,kartId,lapTime,sessionTime):
-        if self._targetkart and kartId==self._targetkart:
+        if self._targetkart and self._isTargetKart(kartId):
             self.fireEvent(RMInfoKartLap(kartId,lapTime,sessionTime,rmprio=RM_PRIO_HIGH))
 
     @handler("rmanalyzertarget")
@@ -80,7 +92,7 @@ class RMAnalyzer(Component):
 
 
     @handler("rmeventheartbeat")
-    def _rechargedatatimer(self):
+    def _rechargedatatimer(self,*args,**kwargs):
         self._datatimer.reset()
 
     @handler("rmeventheartbeat")
@@ -105,7 +117,7 @@ class RMAnalyzer(Component):
         if status<>self._racestatus:
             self._racestatus=status
             self._racestatustime=datetime.datetime.now()
-            self._tellracestatus(status,RM_PRIO_HIGH)
+            self._tellracestatus(status,RM_PRIO_OOB)
         elif (datetime.datetime.now()-self._racestatustime)>datetime.timedelta(minutes=1) and self._racestatus<>"RACE":
             self._racestatustime=datetime.datetime.now()
             self._tellracestatus(self._racestatus,RM_PRIO_LOW)        
@@ -115,3 +127,19 @@ class RMAnalyzer(Component):
         event=statevents[status]
         self.fireEvent(event(rmprio=prio))
         
+
+    @handler("rmeventkartplacetime")
+    def _rmeventkartplacetime(self,place,kartId,lap,lapTime,unk1):
+        if place==1:
+            if self._isTargetKart(kartId):
+                if not self._racehavebesttime:
+                    self.fireEvent(RMInfoKartBestLap(rmprio=RM_PRIO_NORMAL))
+                    self._racebestlap=lap
+                    self._racebesttime=lapTime
+                    self._racehavebesttime=True
+            else:
+                if self._racehavebesttime:
+                    self._racehavebesttime=False
+                    self._racebesttime=lapTime
+                    self._racebestlap=lap
+                    self.fireEvent(RMInfoKartLostBestLap(rmprio=RM_PRIO_NORMAL))

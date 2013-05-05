@@ -4,21 +4,23 @@
 # 50.56.75.58:50006 - arena
 # 50.56.75.58:50002 - forza
 
-
-from circuits.io import File
+from circuits.io.file import File,Read
 from circuits.io.events import Write
-from circuits.net.protocols import LP
+from circuits.net.protocols.line import LP,Line
 from circuits.net.sockets import TCPClient,Connect
 from circuits import Component,handler,Debugger
+from circuits.app import Logger
+from circuits.core.pollers import Poll,EPoll,KQueue,Select
 
 import sys
 
-from raceman.lib.rmstream import RMStream
-from raceman.lib.rmdecoder import RMDecoder
+from raceman.lib.rmstream import RMStream,RMStreamEvent
+from raceman.lib.rmdecoder import RMDecoder,RMEventHeartBeat,RMEventUnknown
 from raceman.lib.rmanalyzer import RMAnalyzer,RMAnalyzerTarget
 from raceman.lib.rmteller import RMTeller
 from raceman.lib.rmagimanager import RMAGIManager,RMAGIHandler
-from raceman.lib.rmagi import AGI
+from raceman.lib.rmagi import AGI,AGI2,AGIResult,AGIReady,AGICommand
+from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
 from signal import SIGHUP
 from exceptions import AttributeError
 from raceman.lib.config import config
@@ -36,7 +38,6 @@ class Manager(Component):
 
     @handler("agistartupcomplete")
     def _agistartupcomplete(self,agiarg):
-#        if hasattr(agiargs,'agi_arg_2'):
         self._agiarg=agiarg
         try:
             self.fireEvent(RMAnalyzerTarget(agiarg['agi_arg_1'],config[agiarg['agi_arg_1']]['park'][agiarg['agi_arg_2']][agiarg['agi_arg_3']]))
@@ -44,17 +45,17 @@ class Manager(Component):
         except AttributeError:
             pass
 
-    
+
 
 (Manager()+
-Debugger(file="/var/log/asterisk/demo.log")+
+Debugger(logger=Logger(type='file',filename="/var/log/asterisk/demo.log",level="DEBUG",name='rman'),IgnoreEvents=(Read,Line,RMEventHeartBeat,RMEventUnknown,AGIResult,RMStreamEvent,AGIReady,EQHaveEvent,EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQEnqueueEvent,AGICommand))+
 TCPClient(channel='rminput')+
-#File(filename='stream0.txt',channel='rminput')+
 LP(channel='rminput')+
 RMStream(channel='rminput')+
 RMDecoder()+
 RMAnalyzer()+
 RMTeller()+
-AGI()+
 RMAGIManager()+
-RMAGIHandler()).run()
+RMAGIHandler()+
+AGI2()
+).run()

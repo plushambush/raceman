@@ -11,9 +11,7 @@ from circuits.net.sockets import TCPClient,Connect
 from circuits import Component,handler,Debugger
 from circuits.app import Logger
 from circuits.core.pollers import Poll,EPoll,KQueue,Select
-
 import sys
-
 from raceman.lib.rmstream import RMStream,RMStreamEvent
 from raceman.lib.rmdecoder import RMDecoder,RMEventHeartBeat,RMEventUnknown
 from raceman.lib.rmanalyzer import RMAnalyzer,RMAnalyzerTarget
@@ -26,20 +24,20 @@ from exceptions import AttributeError
 from raceman.lib.config import config
 
 class Manager(Component):
-    """MAIN manager"""
-    @handler("agihangup")
-    def _agihangup(self):
-        self.stop()
+	"""MAIN manager"""
+	@handler("agihangup")
+	def _agihangup(self):
+		self.stop()
 
-    @handler("signal")
-    def _signal(self,sig,sigtype):
-        if sig==SIGHUP:
-            self.stop()
+	@handler("signal")
+	def _signal(self,sig,sigtype):
+		if sig==SIGHUP:
+			self.stop()
 
-    @handler("agistartupcomplete")
-    def _agistartupcomplete(self,agiarg):
-        self._agiarg=agiarg
-        try:
+	@handler("agistartupcomplete")
+	def _agistartupcomplete(self,agiarg):
+		self._agiarg=agiarg
+		try:
 			_track=agiarg['agi_arg_1']
 			_class=agiarg['agi_arg_2']
 			_kart=agiarg['agi_arg_3']
@@ -48,8 +46,8 @@ class Manager(Component):
 			kartname=config[_track]['park'][_class][_kart]['name']
 			self.fireEvent(RMAnalyzerTarget(track,kart,kartname))
 			self.fireEvent(Connect(config[_track]['streamip'],config[_track]['streamport'],channels="rminput"))
-        except AttributeError:
-            pass
+		except AttributeError:
+			pass
 
 
 

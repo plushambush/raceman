@@ -3,9 +3,11 @@ from circuits.core import Component,Event,handler
 import raceman.lib.prio
 
 class RMTellSayMessage(Event):
+	name='rmtellsaymessage'
 	"""Say text to user"""
 
 class RMTellPlayFile(Event):
+	name='rmtellplayfile'
 	"""Play a file to user"""
 
 

@@ -4,7 +4,8 @@ from raceman.lib.eventqueue import EventQueue,EQEnqueueEvent,EQHandler,EQHandler
 from raceman.lib.rmagi import AGICommand
 
 class RMAGICommand(Event):
-    """AGI COmmand"""
+	name='rmagicommand'
+	"""AGI COmmand"""
 
 class RMAGIManager(EventQueue):
     @handler("rmtellsaymessage")

@@ -4,53 +4,69 @@ from raceman.lib.prio import *
 import re
 
 class RMAnalyzerTarget(Event):
-    """Set target kart"""
+	name='rmanalyzertarget'
+	"""Set target kart"""
 
 class RMInfoKartLap(Event):
-    """Target kart finished lap"""
+	name='rminfokartlap'
+	"""Target kart finished lap"""
 
 
 class RMInfoKartBestLap(Event):
-    """Target kart set best lap"""
+	name='rminfokartbestlap'
+	"""Target kart set best lap"""
 
 class RMInfoKartLostBestLap(Event):
-    """Kart lost best lap"""
+	name='rminfokartlostbestlap'
+	"""Kart lost best lap"""
     
 class RMInfoKartLapBetter(Event):
+	name='rminfokartlapbetter'
 	"""Kart lap time is better then average"""
-	
+
 class RMInfoKartLapWorse(Event):
+	name='rminfokartlapworse'
 	"""Kart lap time is worse then average"""
 
 class RMInfoKartSelected(Event):
-    """Kart selected as target"""
+	name='rminfokartselected'
+	"""Kart selected as target"""
 
 class RMInfoTrackSelected(Event):
-    """Track selected as target"""
+	name='rminfotrackselected'
+	"""Track selected as target"""
 
 class RMInfoConnected(Event):
-    """Connected to the server"""
+	name='rminfoconnected'
+	"""Connected to the server"""
 
 class RMInfoDisconnected(Event):
-    """Disconnected from the server"""
+	name='rminfodisconnected'
+	"""Disconnected from the server"""
 
 class RMInfoRaceWaiting(Event):
-    """Waiting fir race start"""
+	name='rminforacewaiting'
+	"""Waiting fir race start"""
 
 class RMInfoRaceGoing(Event):
-    """Race is started"""
+	name='rminforacegoing'
+	"""Race is started"""
 
 class RMInfoRaceFinish(Event):
-    """Race is finished"""
+	name='rminforacefinish'
+	"""Race is finished"""
 
 class RMInfoRaceNoRace(Event):
-    """No race now"""
+	name='rminforacenorace'
+	"""No race now"""
 
 class RMInfoRaceNoData(Event):
-    """No data about race"""
+	name='rminforacenodata'
+	"""No data about race"""
 
 class RMTimerNoRaceData(Event):
-    """Server not sending data"""
+	name='rmtimernoracedata'
+	"""Server not sending data"""
 
 
 class RMAnalyzer(Component):
@@ -62,7 +78,7 @@ class RMAnalyzer(Component):
 		self._targetkart=None
 		self._racestatus=None
 		self._racestatustime=None
-		self._datatimer=Timer(s=20,e=RMTimerNoRaceData(),persist=True,c="rmtimernoracedata").register(self)
+		self._datatimer=Timer(20,RMTimerNoRaceData(),persist=True,c="rmtimernoracedata").register(self)
 		self._clearracedata()
 		
 		

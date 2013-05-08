@@ -17,7 +17,7 @@ from raceman.lib.rmdecoder import RMDecoder,RMEventHeartBeat,RMEventUnknown
 from raceman.lib.rmanalyzer import RMAnalyzer,RMAnalyzerTarget
 from raceman.lib.rmteller import RMTeller
 from raceman.lib.rmagimanager import RMAGIManager,RMAGIHandler
-from raceman.lib.rmagi import AGI,AGI2,AGIResult,AGIReady,AGICommand
+from raceman.lib.rmagi import AGI,AGIResult,AGIReady,AGICommand
 from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
 from signal import SIGHUP
 from exceptions import AttributeError
@@ -52,7 +52,8 @@ class Manager(Component):
 
 
 (Manager()+
-Debugger(logger=Logger(type='file',filename="/var/log/asterisk/demo.log",level="DEBUG",name='rman'),IgnoreEvents=(Read,Line,RMEventHeartBeat,RMEventUnknown,AGIResult,RMStreamEvent,AGIReady,EQHaveEvent,EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQEnqueueEvent,AGICommand))+
+#Debugger(logger=Logger(type='file',filename="/var/log/asterisk/demo.log",level="DEBUG",name='rman'),IgnoreEvents=(Read,Line,RMEventHeartBeat,RMEventUnknown,AGIResult,RMStreamEvent,AGIReady,EQHaveEvent,EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQEnqueueEvent,AGICommand))+
+Debugger(logger=Logger(type='file',filename="/var/log/asterisk/demo.log",level="DEBUG",name='rman'))+
 TCPClient(channel='rminput')+
 LP(channel='rminput')+
 RMStream(channel='rminput')+
@@ -61,5 +62,5 @@ RMAnalyzer()+
 RMTeller()+
 RMAGIManager()+
 RMAGIHandler()+
-AGI2()
+AGI()
 ).run()

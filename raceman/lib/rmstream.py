@@ -1,10 +1,12 @@
 from circuits.core import Event, Component, handler
 
 class RMStreamEvent(Event):
-  """Data received from the server"""
+	name='rmstreamevent'
+	"""Data received from the server"""
 
 class RMStreamEventBadData(Event):
-  """Wrongly formatted data received from server"""
+	name='rmstreameventbaddata'
+	"""Wrongly formatted data received from server"""
 
 class RMStream(Component):
   """Receive data from server"""

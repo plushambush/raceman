@@ -57,7 +57,7 @@ Debugger(logger=Logger(type='file',filename="/var/log/asterisk/demo.log",level="
 TCPClient(channel='rminput')+
 LP(channel='rminput')+
 RMStream(channel='rminput')+
-RMDecoder()+
+RMDecoder(channel='rminput')+
 RMAnalyzer()+
 RMTeller()+
 RMAGIManager()+

@@ -11,7 +11,7 @@ class RMStreamEventBadData(Event):
 class RMStream(Component):
   """Receive data from server"""
 
-  @handler("line",channel="datastream")
+  @handler("line")
   def _line(self,*args, **kwargs):
     comps=[comp.strip("\" .") for comp in args[0].split(",")]
     if (len(comps)>0):

@@ -32,7 +32,7 @@ class RMDecoder(Component):
     if hasattr(self,command) and callable(getattr(self,command)):
         getattr(self,command)(*args[1:])
     else:
-        self.push(RMEventUnknown(args))
+        self.fireEvent(RMEventUnknown(args))
 
   def _interpret_F(self,*args,**kwargs):
     """interpret $F command
@@ -43,7 +43,7 @@ class RMDecoder(Component):
     sessionTime
     flagStatus"""
 
-    self.push(RMEventHeartBeat(lapsToGo=int(args[0]),
+    self.fireEvent(RMEventHeartBeat(lapsToGo=int(args[0]),
             timeToGo=args[1],
             currentTime=args[2],
             sessionTime=args[3],
@@ -58,7 +58,7 @@ class RMDecoder(Component):
         sessionTime
     """
     if args[1]<>"00:00:00":
-    	self.push(RMEventKartLap(kartId=args[0],lapTime=RacingTime.fromstr(args[1]),sessionTime=RacingTime.fromstr(args[2])))
+    	self.fireEvent(RMEventKartLap(kartId=args[0],lapTime=RacingTime.fromstr(args[1]),sessionTime=RacingTime.fromstr(args[2])))
 
 
   def _interpret_SP(self,*args,**kwargs):
@@ -69,4 +69,4 @@ class RMDecoder(Component):
     lapNo
     lapTime
     unk1"""
-    self.push(RMEventKartPlaceTime(int(args[0]), unicode(args[1]), int(args[2]), RacingTime.fromstr(args[3]),args[4]))
+    self.fireEvent(RMEventKartPlaceTime(int(args[0]), unicode(args[1]), int(args[2]), RacingTime.fromstr(args[3]),args[4]))

@@ -3,13 +3,12 @@ from circuits.core import Component,Event,handler
 import raceman.lib.prio
 
 class RMTellSayMessage(Event):
-	name='rmtellsaymessage'
 	"""Say text to user"""
+	name='rmtellsaymessage'
 
 class RMTellPlayFile(Event):
-	name='rmtellplayfile'
 	"""Play a file to user"""
-
+	name='rmtellplayfile'
 
 class RMTeller(Component):
 	"""Events - Phrases"""
@@ -41,12 +40,12 @@ class RMTeller(Component):
 
 	@handler("rminforacegoing")
 	def _rminforacegoing(self,*args,**kwargs):
-		self.fireEvent(RMTellPlayFile('custom/gong',**kwargs))
+		self.fireEvent(RMTellPlayFile('gong',**kwargs))
 		self.fireEvent(RMTellSayMessage(u"   Гонка началась.",**kwargs))
 
 	@handler("rminforacefinish")
 	def _rminforacefinish(self,*args,**kwargs):
-		self.fireEvent(RMTellPlayFile('custom/gong',**kwargs))
+		self.fireEvent(RMTellPlayFile('gong',**kwargs))
 		self.fireEvent(RMTellSayMessage(u"   +Финиш гонки.",**kwargs))
 
 	@handler("rminforacenorace")
@@ -60,19 +59,18 @@ class RMTeller(Component):
 
 	@handler("rminfokartbestlap")
 	def _rminfokartbestlap(self,*args,**kwargs):
-		self.fireEvent(RMTellPlayFile('custom/achv',**kwargs))
+		self.fireEvent(RMTellPlayFile('achv',**kwargs))
 		self.fireEvent(RMTellSayMessage(u"   Установлено лучшее время.",**kwargs))
 
 	@handler("rminfokartlostbestlap")
 	def _rminfokartlostbestlap(self,*args,**kwargs):
-		self.fireEvent(RMTellPlayFile('custom/boo',**kwargs))
+		self.fireEvent(RMTellPlayFile('boo',**kwargs))
 		self.fireEvent(RMTellSayMessage(u"   Потеряно лучшее время.",**kwargs))
 
 	@handler("rminfokartlapbetter")
 	def _rminfokartlapbetter(self,*args,**kwargs):
-		self.fireEvent(RMTellPlayFile('custom/peew',**kwargs))
+		self.fireEvent(RMTellPlayFile('peew',**kwargs))
 		
 	@handler("rminfokartlapworse")
 	def _rminfokartlapworse(self,*args,**kwargs):
-		self.fireEvent(RMTellPlayFile('custom/zzz',**kwargs))
-		
+		self.fireEvent(RMTellPlayFile('zzz',**kwargs))

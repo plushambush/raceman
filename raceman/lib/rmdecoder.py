@@ -3,22 +3,21 @@ from raceman.lib.racingtime import RacingTime
 
 
 class RMEventHeartBeat(Event):
-	name='rmeventheartbeat'
 	"""F event (heartbeat every second)"""
+	name='rmeventheartbeat'
 
 class RMEventKartLap(Event):
-	name='rmeventkartlap'
 	"""J event: kart passes finish line"""
-
+	name='rmeventkartlap'
 
 class RMEventKartPlaceTime(Event):
-	name='rmeventkartplacetime'
 	"""SP event: kart place (by time)"""
+	name='rmeventkartplacetime'
 
 
 class RMEventUnknown(Event):
-	name='rmeventunknown'
 	"""Unknown command  received from the stream, cannot decode"""
+	name='rmeventunknown'
 
 class RMDecoder(Component):
   """Decoder of the data received from server"""

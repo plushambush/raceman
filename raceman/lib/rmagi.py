@@ -24,34 +24,29 @@ AGIRESPONSE  = re.compile(r'^(?P<answer>\d{3})([- ])(.*)$')
 AGIKV = re.compile(r'result=(?P<result>\S+)(?:\s*\((?P<extra>.*)\))*')
 
 class AGIResult(Event):
-	name='agiresult'
 	"""AGI Result string"""
+	name='agiresult'
 
 class AGIReady(Event):
-	name='agiready'
 	"""Fired when AGI manager is ready to process nect command"""
+	name='agiready'
 
 class AGICommand(Event):
-	name='agicommand'
 	"""Asks AGI to issue a command """
-
+	name='agicommand'
 
 class AGIStartupComplete(Event):
-	name='agistartupcomplete'
 	"""Fired to signal startup procedure end"""
-
+	name='agistartupcomplete'
 
 class AGIHangup(Event):
-	name='agihangup'
 	"""Fired when AGI requested hangup (200 result=-1)"""
-
+	name='agihangup'
 
 class AGI(Component):
     def __init__(self,*args,**kwargs):
         super(AGI,self).__init__(*args,**kwargs)
         self._state=ST_STARTUP
-#        self.Input=stdin.register(self)
-#        self.Output=stdout.register(self)
         self.Input=File(sys.__stdin__,mode="r", channel="stdin").register(self)
         self.Output=File(sys.__stdout__,mode="w", channel="stdout", encoding='utf-8').register(self)
         self.LP=LP(channel='stdin').register(self)
@@ -117,4 +112,3 @@ class AGI(Component):
     def _agicommand(self,data):
         self._state=ST_BUSY
         self.Output.write(str(bytearray(data+ "\n",'utf-8')))
-#        self.Output.write(data +"\n")

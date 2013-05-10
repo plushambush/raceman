@@ -4,8 +4,8 @@ from raceman.lib.eventqueue import EventQueue,EQEnqueueEvent,EQHandler,EQHandler
 from raceman.lib.rmagi import AGICommand
 
 class RMAGICommand(Event):
+	"""AGI Command"""
 	name='rmagicommand'
-	"""AGI COmmand"""
 
 class RMAGIManager(EventQueue):
     @handler("rmtellsaymessage")
@@ -14,7 +14,7 @@ class RMAGIManager(EventQueue):
 
     @handler("rmtellplayfile")
     def _rmtellplayfile(self,_file,rmprio):
-        self.fireEvent(EQEnqueueEvent(AGICommand(u"STREAM FILE %s any" % _file),rmprio))
+        self.fireEvent(EQEnqueueEvent(AGICommand(u"STREAM FILE custom/%s any" % _file),rmprio))
 
 
 class RMAGIHandler(EQHandler):

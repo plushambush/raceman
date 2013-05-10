@@ -4,70 +4,68 @@ from raceman.lib.prio import *
 import re
 
 class RMAnalyzerTarget(Event):
-	name='rmanalyzertarget'
 	"""Set target kart"""
+	name='rmanalyzertarget'
 
 class RMInfoKartLap(Event):
-	name='rminfokartlap'
 	"""Target kart finished lap"""
-
+	name='rminfokartlap'
 
 class RMInfoKartBestLap(Event):
-	name='rminfokartbestlap'
 	"""Target kart set best lap"""
+	name='rminfokartbestlap'
 
 class RMInfoKartLostBestLap(Event):
-	name='rminfokartlostbestlap'
 	"""Kart lost best lap"""
+	name='rminfokartlostbestlap'    
     
 class RMInfoKartLapBetter(Event):
-	name='rminfokartlapbetter'
 	"""Kart lap time is better then average"""
+	name='rminfokartlapbetter'
 
 class RMInfoKartLapWorse(Event):
-	name='rminfokartlapworse'
 	"""Kart lap time is worse then average"""
+	name='rminfokartlapworse'
 
 class RMInfoKartSelected(Event):
-	name='rminfokartselected'
 	"""Kart selected as target"""
+	name='rminfokartselected'
 
 class RMInfoTrackSelected(Event):
-	name='rminfotrackselected'
 	"""Track selected as target"""
+	name='rminfotrackselected'
 
 class RMInfoConnected(Event):
-	name='rminfoconnected'
 	"""Connected to the server"""
+	name='rminfoconnected'
 
 class RMInfoDisconnected(Event):
-	name='rminfodisconnected'
 	"""Disconnected from the server"""
+	name='rminfodisconnected'
 
 class RMInfoRaceWaiting(Event):
-	name='rminforacewaiting'
 	"""Waiting fir race start"""
+	name='rminforacewaiting'
 
 class RMInfoRaceGoing(Event):
-	name='rminforacegoing'
 	"""Race is started"""
+	name='rminforacegoing'
 
 class RMInfoRaceFinish(Event):
-	name='rminforacefinish'
 	"""Race is finished"""
+	name='rminforacefinish'
 
 class RMInfoRaceNoRace(Event):
-	name='rminforacenorace'
 	"""No race now"""
+	name='rminforacenorace'
 
 class RMInfoRaceNoData(Event):
-	name='rminforacenodata'
 	"""No data about race"""
+	name='rminforacenodata'
 
 class RMTimerNoRaceData(Event):
-	name='rmtimernoracedata'
 	"""Server not sending data"""
-
+	name='rmtimernoracedata'
 
 class RMAnalyzer(Component):
 	"""Analyze RMEvent* events and decide what race event user should hear"""

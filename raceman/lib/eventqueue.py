@@ -5,33 +5,34 @@ import sys
 
 
 class EQHaveEvent(Event):
-	name='eqhaveevent'
 	"""Fired when EventQueue has new event"""
+	name='eqhaveevent'
 
 class EQEmpty(Event):
-	name='eqempty'
 	"""Fired when EventQueue is empty"""
-
+	name='eqempty'
 
 class EQFull(Event):
-	name='eqfull'
 	"""Fired when EventQueue is full"""
+	name='eqfull'
+
 
 class EQHandlerBusy(Event):
+
 	name='eqhandlerbusy'
-	"""Fired when Handler is busy"""
+
 
 class EQEnqueueEvent(Event):
+	"""Receive an event and put it in queue"""
 	name='eqenqueueevent'
-	"""Receive an event apd put it in queue"""
 
 class EQHandlerAvailable(Event):
-	name='eqhandleravailable'
 	"""Sent by an available handler"""
+	name='eqhandleravailable'
 
 class EQHandlerEngaged(Event):
-	name='eqhandlerengaged'
 	"""Sent by handler when it's waiting for event"""
+	name='eqhandlerengaged'
 
 class EventQueue(Component):
 	"""Event Queue"""

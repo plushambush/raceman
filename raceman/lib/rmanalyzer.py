@@ -1,6 +1,7 @@
 from circuits.core import Component,Event,handler,Timer
 import datetime
 from raceman.lib.prio import *
+from raceman.lib.racingtime import RacingTime
 import re
 
 class RMAnalyzerTarget(Event):
@@ -84,7 +85,8 @@ class RMAnalyzer(Component):
 		self._racebestlap=None
 		self._racebesttime=None
 		self._racehavebesttime=False
-		self._kartavgtime=None
+		self._karttotaltime=RacingTime.fromint(0)
+		self._kartlaps=0
 		
 	
 	def _isTargetKart(self,kartId):
@@ -93,14 +95,14 @@ class RMAnalyzer(Component):
 	@handler("rmeventkartlap",priority=50)
 	def _rmeventkartlap1(self,kartId,lapTime,sessionTime):
 		if self._isTargetKart(kartId):
-			if self._kartavgtime:
-				if lapTime<=self._kartavgtime:
-					self.fireEvent(RMInfoKartLapBetter(self._kartavgtime,rmprio=RM_PRIO_HIGH))
+			if self._kartlaps>0:
+				avgtime=self._karttotaltime/self._kartlaps
+				if lapTime<=avgtime:
+					self.fireEvent(RMInfoKartLapBetter(avgtime,rmprio=RM_PRIO_HIGH))
 				else:
-					self.fireEvent(RMInfoKartLapWorse(self._kartavgtime,rmprio=RM_PRIO_HIGH))
-				self._kartavgtime=(self._kartavgtime+lapTime)/2
-			else:
-				self._kartavgtime=lapTime
+					self.fireEvent(RMInfoKartLapWorse(avgtime,rmprio=RM_PRIO_HIGH))
+			self._karttotaltime=self._karttotaltime+lapTime
+			self._kartlaps+=1
 	
 	
 	
@@ -177,4 +179,4 @@ class RMAnalyzer(Component):
 					self._racehavebesttime=False
 					self._racebesttime=lapTime
 					self._racebestlap=lap
-					self.fireEvent(RMInfoKartLostBestLap(rmprio=RM_PRIO_NORMAL))
+					self.fireEvent(RMInfoKartLostBestLap(kartId,lapTime,rmprio=RM_PRIO_NORMAL))

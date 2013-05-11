@@ -109,13 +109,22 @@ class RacingTime(object):
 			d2="  "
 		if not compact:
 			return ("%s%02d" + d1 + "%02d" + d1 + "%02d" + d2 + "%03d") % (self.sign(forcesign),self.hour(),self.minute(),self.second(),self.ms())
-		ret=("%d" + d2 + "%03d") % (self.second(),self.ms())
-		if self.minute()<>0 or self.hour()<>0:
-			ret=("%d" + d1 +"%s") % (self.minute(),ret)
-		if self.hour()<>0:
-			ret=("%d" + d1 + "%s") % (self.hour(),ret)
-		ret=self.sign(forcesign)+ret
-		return ret
+		else:			
+			ms=self.ms()
+			if tosay and ms<100:
+				if ms<10:
+					_ms="0" +d2 + "0" + d2 + "%1d" %ms
+				else:
+					_ms="0" +d2 + "%2d" % ms			
+			else:
+				_ms="%03d" % ms
+			ret=("%d" + d2 + "%s") % (self.second(),_ms)
+			if self.minute()<>0 or self.hour()<>0:
+				ret=("%d" + d1 +"%s") % (self.minute(),ret)
+			if self.hour()<>0:
+				ret=("%d" + d1 + "%s") % (self.hour(),ret)
+			ret=self.sign(forcesign)+ret
+			return ret
       
     
 	def __str__(self):

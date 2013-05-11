@@ -56,7 +56,7 @@ class RMDecoder(Component):
         LapTime
         sessionTime
     """
-    if args[1]<>"00:00:00":
+    if args[1]<>"00:00:00.000":
     	self.fireEvent(RMEventKartLap(kartId=args[0],lapTime=RacingTime.fromstr(args[1]),sessionTime=RacingTime.fromstr(args[2])))
 
 

@@ -9,6 +9,14 @@ class RMTellSayMessage(Event):
 class RMTellPlayFile(Event):
 	"""Play a file to user"""
 	name='rmtellplayfile'
+	
+class RMTellPlayMusic(Event):
+	"""Play background music"""
+	name='rmtellplaymusic'
+	
+class RMTellStopMusic(Event):
+	"""Stop background music"""
+	name='rmtellstopmusic'		
 
 class RMTeller(Component):
 	"""Events - Phrases"""
@@ -32,7 +40,7 @@ class RMTeller(Component):
 
 	@handler("rminfokartselected")
 	def _rminfokartselected(self,kart,*args,**kwargs):
-		self.fireEvent(RMTellSayMessage(u"   Установлено слежение за +каартом   %s." % kart,**kwargs))
+		self.fireEvent(RMTellSayMessage(u"   Сле+жение за +каартом   %s." % kart,**kwargs))
 
 	@handler("rminforacewaiting")
 	def _rminforacewaiting(self,*args,**kwargs):
@@ -41,16 +49,20 @@ class RMTeller(Component):
 	@handler("rminforacegoing")
 	def _rminforacegoing(self,*args,**kwargs):
 		self.fireEvent(RMTellPlayFile('gong',**kwargs))
-		self.fireEvent(RMTellSayMessage(u"   Гонка началась.",**kwargs))
+		self.fireEvent(RMTellPlayMusic('',**kwargs))
+		self.fireEvent(RMTellSayMessage(u"   Гонка нача+лась.",**kwargs))
+		
 
 	@handler("rminforacefinish")
 	def _rminforacefinish(self,*args,**kwargs):
 		self.fireEvent(RMTellPlayFile('gong',**kwargs))
+		self.fireEvent(RMTellStopMusic(**kwargs))
 		self.fireEvent(RMTellSayMessage(u"   +Финиш гонки.",**kwargs))
 
 	@handler("rminforacenorace")
 	def _rminforacenorace(self,*args,**kwargs):
 		self.fireEvent(RMTellSayMessage(u"   Гонка закончена.",**kwargs))
+		
 
 	@handler("rminforacenodata")
 	def _rminforacenodata(self,*args,**kwargs):
@@ -60,12 +72,12 @@ class RMTeller(Component):
 	@handler("rminfokartbestlap")
 	def _rminfokartbestlap(self,*args,**kwargs):
 		self.fireEvent(RMTellPlayFile('achv',**kwargs))
-		self.fireEvent(RMTellSayMessage(u"   Установлено лучшее время.",**kwargs))
+		self.fireEvent(RMTellSayMessage(u"   Лучшее время гонки.",**kwargs))
 
 	@handler("rminfokartlostbestlap")
-	def _rminfokartlostbestlap(self,*args,**kwargs):
+	def _rminfokartlostbestlap(self,kartId,kartTime,*args,**kwargs):
 		self.fireEvent(RMTellPlayFile('boo',**kwargs))
-		self.fireEvent(RMTellSayMessage(u"   Потеряно лучшее время.",**kwargs))
+		self.fireEvent(RMTellSayMessage(u"   Потеряно лучшее время гонки. Карт %s. Время %s" % (kartId,kartTime.tostr(compact=True,tosay=True)),**kwargs))
 
 	@handler("rminfokartlapbetter")
 	def _rminfokartlapbetter(self,*args,**kwargs):

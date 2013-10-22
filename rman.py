@@ -16,12 +16,13 @@ from raceman.lib.rmstream import RMStream,RMStreamEvent
 from raceman.lib.rmdecoder import RMDecoder,RMEventHeartBeat,RMEventUnknown
 from raceman.lib.rmanalyzer import RMAnalyzer,RMAnalyzerTarget
 from raceman.lib.rmteller import RMTeller
-from raceman.lib.rmagimanager import RMAGIManager,RMAGIHandler
+from raceman.lib.rmagisound import RMAGISound
 from raceman.lib.rmagi import AGI,AGIResult,AGIReady,AGICommand
 from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
 from signal import SIGHUP
 from exceptions import AttributeError
 from raceman.lib.config import config
+from raceman.lib.rmsound import RMSound
 
 class Manager(Component):
 	"""MAIN manager"""
@@ -60,7 +61,7 @@ RMStream(channel='rminput')+
 RMDecoder(channel='rminput')+
 RMAnalyzer()+
 RMTeller()+
-RMAGIManager()+
+RMAGISound()+
 RMAGIHandler()+
 AGI()
 ).run()

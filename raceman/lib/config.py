@@ -3,7 +3,7 @@ config={
 			'arena': { 
 				'name':u"Арена",
 				'streamip':'50.56.75.58',
-				'streamport':50006,
+				'streamport':50007,
 				'park':{
 					'1': {
 						'01':{'name':u'1','match':'^1$'},

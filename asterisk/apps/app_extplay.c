@@ -47,6 +47,10 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revision: 336716 $")
 #include "asterisk/translate.h"
 #include "asterisk/app.h"
 
+#include <libavutil/audioconvert.h>
+#include <libswresample/swresample.h>
+
+
 /*** DOCUMENTATION
 	<application name="extplay" language="en_US">
 		<synopsis>
@@ -106,20 +110,7 @@ static int timed_read(int fd, void *data, int datalen, int timeout)
 }
 
 
-#define DEFAULT_RFACTOR 22050.0/8000.0
-static int dirty_resample(short *inbuf, int insize, short * outbuf, int outsize, float factor) {
-	int outpt=0;
-	int inpt=0;
-	if ((insize<=0) || (outsize<=0) || (inbuf==NULL) || (outbuf==NULL)) {
-		return -1;
-	}
-	while((outpt<outsize) && (inpt< insize)) {
-			outbuf[outpt]=inbuf[inpt];
-			outpt++;
-			inpt=round((float)outpt*factor);
-	}
-	return outpt;
-}
+#define SAMPLE_BUFFER_SIZE 1600
 
 static int extplay(struct ast_channel *chan, const char *data)
 {
@@ -134,12 +125,18 @@ static int extplay(struct ast_channel *chan, const char *data)
 	struct myframe {
 		struct ast_frame f;
 		char offset[AST_FRIENDLY_OFFSET];
-		short frdata[160];
+		uint8_t frdata[SAMPLE_BUFFER_SIZE];
 	} myf = {
 		.f = { 0, },
 	};
+
+	uint8_t res_buffer[SAMPLE_BUFFER_SIZE];
 	
-	short res_buffer[160];
+	const uint8_t *res_buffer_ptr=res_buffer;
+	uint8_t *out_buffer_ptr=myf.frdata;
+	
+	struct SwrContext * swr;
+	
 
 	if (ast_strlen_zero(data)) {
 		ast_log(LOG_WARNING, "Extplay requires an argument (filename)\n");
@@ -159,8 +156,35 @@ static int extplay(struct ast_channel *chan, const char *data)
 		ast_log(LOG_WARNING, "Unable to set write format to signed linear\n");
 		return -1;
 	}
+
+	swr=swr_alloc_set_opts(
+	NULL,
+	AV_CH_LAYOUT_MONO,
+	AV_SAMPLE_FMT_S16,
+	8000,
+	AV_CH_LAYOUT_MONO,
+	AV_SAMPLE_FMT_S16,
+	22050,
+	0,
+	NULL);
+	// Set up resampler
+	if (swr==NULL) {
+		ast_log(LOG_WARNING,"Unable to allocate resampler\n");
+		return -1;
+	}
+	res=swr_init(swr);
+	if (res!=0) {
+		ast_log(LOG_WARNING,"Unable to initialize resampler. Error: %x\n",res);
+		swr_free(&swr);
+		return -1;
+	}
+
+	ast_log(LOG_WARNING,"Initialized resampler\n");
+	
 	
 	res = exec_extplayer(data, fds[1]);
+	
+	ast_log(LOG_WARNING,"Executed external process %s with pid %d\n",data,res);
 	/* Wait 1000 ms first */
 	next = ast_tvnow();
 	next.tv_sec += 1;
@@ -171,22 +195,22 @@ static int extplay(struct ast_channel *chan, const char *data)
 		for (;;) {
 			ms = ast_tvdiff_ms(next, ast_tvnow());
 			if (ms <= 0) {
-				/*res = timed_read(fds[0], myf.frdata, sizeof(myf.frdata), timeout);*/
 				res = timed_read(fds[0], res_buffer, sizeof(res_buffer), timeout);
 				if (res > 0) {
-					res=dirty_resample(res_buffer,res/2,myf.frdata,sizeof(myf.frdata)/2,DEFAULT_RFACTOR)*2;
+					res=swr_convert(swr,&out_buffer_ptr,SAMPLE_BUFFER_SIZE,&res_buffer_ptr,res/2);
 					if (res >0) {
 						myf.f.frametype = AST_FRAME_VOICE;
 						myf.f.subclass.codec = AST_FORMAT_SLINEAR;
-						myf.f.datalen = res;
-						myf.f.samples = res / 2;
+						myf.f.datalen = res*2;
+						myf.f.samples = res;
 						myf.f.mallocd = 0;
 						myf.f.offset = AST_FRIENDLY_OFFSET;
 						myf.f.src = __PRETTY_FUNCTION__;
 						myf.f.delivery.tv_sec = 0;
 						myf.f.delivery.tv_usec = 0;
 						myf.f.data.ptr = myf.frdata;
-						if (ast_write(chan, &myf.f) < 0) {
+						int res1 = ast_write(chan, &myf.f);
+						if (res1<0) {
 							res = -1;
 							break;
 						}
@@ -199,6 +223,7 @@ static int extplay(struct ast_channel *chan, const char *data)
 				next = ast_tvadd(next, ast_samp2tv(myf.f.samples, 8000));
 			} else {
 				ms = ast_waitfor(chan, ms);
+				
 				if (ms < 0) {
 					ast_debug(1, "Hangup detected\n");
 					res = -1;
@@ -216,6 +241,9 @@ static int extplay(struct ast_channel *chan, const char *data)
 			}
 		}
 	}
+	
+	ast_log(LOG_WARNING,"Exiting...\n");
+	
 	close(fds[0]);
 	close(fds[1]);
 	
@@ -224,6 +252,8 @@ static int extplay(struct ast_channel *chan, const char *data)
 	if (!res && owriteformat)
 		ast_set_write_format(chan, owriteformat);
 	
+	swr_free(&swr);
+		
 	return res;
 }
 

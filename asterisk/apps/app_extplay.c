@@ -69,11 +69,65 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revision: 336716 $")
 	</application>
 
  ***/
+ 
+ 
+#define INPUT_FREQUENCY 16000
+#define OUTPUT_FREQUENCY 8000
+#define SAMPLE_BUFFER_SIZE 1600
+#define MAXARGS 10 
+ 
 static char *app = "extplay";
 
-static int exec_extplayer(const char *filename, int fd)
+
+int str2args(char * data,char * delim, char ** args,int maxrec) {
+
+	int i;
+	char * string=strdup(data);
+
+	char * token=strtok(string,delim);
+	for (i=0;i<maxrec && token!=NULL;i++) {
+		args[i]=strdup(token);
+		token=strtok(NULL,delim);
+	}
+	free(string);
+	return i;
+
+}
+
+void str2args_free(char **strarr,int numrec) {
+	int i;
+	for (i=0;i<numrec;i++) free(strarr[i]);
+}
+
+
+static int exec_extplayer(const char *data, struct ast_channel *chan,int fd)
 {
 	int res;
+	int nargs;
+	char *s, *appname, *endargs;
+	struct ast_str *argsstr = NULL;
+	
+	struct args_t {
+		char * appname;
+		char * otherargs[MAXARGS];
+	} args;
+	
+	
+		
+	memset(args.otherargs,0,sizeof(args.otherargs));
+	s = ast_strdupa(data);
+	appname = strsep(&s, "(");
+	if (s) {
+		endargs = strrchr(s, ')');
+		if (endargs)
+			*endargs = '\0';
+		if ((argsstr = ast_str_create(16))) {
+			ast_str_substitute_variables(&argsstr, 0, chan, s);
+		}
+		nargs=str2args(ast_str_buffer(argsstr),",",args.otherargs,MAXARGS-1);
+		args.otherargs[nargs]=NULL;
+		args.appname=ast_strdupa(appname);
+	}
 
 	res = ast_safe_fork(0);
 	if (res < 0) 
@@ -86,11 +140,14 @@ static int exec_extplayer(const char *filename, int fd)
 
 	dup2(fd, STDOUT_FILENO);
 	ast_close_fds_above_n(STDERR_FILENO);
-
-    execl(filename, filename, (char *)NULL);
+	
+    execv(appname, (char**) &args);
 
 	/* Can't use ast_log since FD's are closed */
 	fprintf(stderr, "Execute of extplay failed\n");
+	
+	ast_free(argsstr);
+	str2args_free(args.otherargs,nargs);
 	_exit(0);
 }
 
@@ -110,7 +167,6 @@ static int timed_read(int fd, void *data, int datalen, int timeout)
 }
 
 
-#define SAMPLE_BUFFER_SIZE 1600
 
 static int extplay(struct ast_channel *chan, const char *data)
 {
@@ -119,7 +175,7 @@ static int extplay(struct ast_channel *chan, const char *data)
 	int ms = -1;
 	int pid = -1;
 	int owriteformat;
-	int timeout = 2000;
+	int timeout = 10000;
 	struct timeval next;
 	struct ast_frame *f;
 	struct myframe {
@@ -161,10 +217,10 @@ static int extplay(struct ast_channel *chan, const char *data)
 	NULL,
 	AV_CH_LAYOUT_MONO,
 	AV_SAMPLE_FMT_S16,
-	8000,
+	OUTPUT_FREQUENCY,
 	AV_CH_LAYOUT_MONO,
 	AV_SAMPLE_FMT_S16,
-	22050,
+	INPUT_FREQUENCY,
 	0,
 	NULL);
 	// Set up resampler
@@ -179,10 +235,10 @@ static int extplay(struct ast_channel *chan, const char *data)
 		return -1;
 	}
 
-	ast_log(LOG_WARNING,"Initialized resampler\n");
+	ast_log(LOG_WARNING,"Initialized resampler. Buffer size: %d Input Freq: %d Output freq: %d\n",SAMPLE_BUFFER_SIZE, INPUT_FREQUENCY, OUTPUT_FREQUENCY);
 	
 	
-	res = exec_extplayer(data, fds[1]);
+	res = exec_extplayer(data, chan,fds[1]);
 	
 	ast_log(LOG_WARNING,"Executed external process %s with pid %d\n",data,res);
 	/* Wait 1000 ms first */

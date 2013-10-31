@@ -1,7 +1,7 @@
 from circuits.core import Component,Event,handler,Timer
 import datetime
-from raceman.lib.prio import *
 from raceman.lib.racingtime import RacingTime
+from raceman.lib.config import *
 import re
 
 class RMAnalyzerTarget(Event):
@@ -98,9 +98,9 @@ class RMAnalyzer(Component):
 			if self._kartlaps>0:
 				avgtime=self._karttotaltime/self._kartlaps
 				if lapTime<=avgtime:
-					self.fireEvent(RMInfoKartLapBetter(avgtime,rmprio=RM_PRIO_HIGH))
+					self.fireEvent(RMInfoKartLapBetter(avgtime))
 				else:
-					self.fireEvent(RMInfoKartLapWorse(avgtime,rmprio=RM_PRIO_HIGH))
+					self.fireEvent(RMInfoKartLapWorse(avgtime))
 			self._karttotaltime=self._karttotaltime+lapTime
 			self._kartlaps+=1
 	
@@ -109,24 +109,28 @@ class RMAnalyzer(Component):
 	@handler("rmeventkartlap",priority=40)
 	def _rmeventkartlap(self,kartId,lapTime,sessionTime):
 		if self._targetkart and self._isTargetKart(kartId):
-			self.fireEvent(RMInfoKartLap(kartId,lapTime,sessionTime,rmprio=RM_PRIO_HIGH))
+			self.fireEvent(RMInfoKartLap(kartId,lapTime,sessionTime))
 
 	@handler("rmanalyzertarget")
-	def _rmanalyzertarget(self,_targettrack,_targetkart,_targetkartname):
+	def _rmanalyzertarget(self,trackID,classID,kartID):
+		_targettrack=config[trackID]['name']
+		_targetkart=config[trackID]['park'][classID][kartID]['match']
+		_targetname=config[trackID]['park'][classID][kartID]['name']
+		
 		self._targetkart=re.compile(_targetkart)
 		self._targettrack=_targettrack
-		self.fireEvent(RMInfoTrackSelected(_targettrack,rmprio=RM_PRIO_OOB))
-		self.fireEvent(RMInfoKartSelected(_targetkartname,rmprio=RM_PRIO_OOB))
+		self.fireEvent(RMInfoTrackSelected(_targettrack))
+		self.fireEvent(RMInfoKartSelected(_targetname))
 
 
 	@handler("connected")
 	def _connected(self,*args,**kwargs):
-		self.fireEvent(RMInfoConnected(rmprio=RM_PRIO_OOB))
+		self.fireEvent(RMInfoConnected())
 
 
 	@handler("disconnected")
 	def _disconnected(self,*args,**kwargs):
-		self.fireEvent(RMInfoDisconnected(rmprio=RM_PRIO_OOB))
+		self.fireEvent(RMInfoDisconnected())
 
 
 	@handler("rmeventheartbeat")
@@ -149,28 +153,28 @@ class RMAnalyzer(Component):
 
 	@handler("rmtimernoracedata")
 	def _rmtimernoracedata(self,*args,**kwargs):
-		self.fireEvent(RMInfoRaceNoData(rmprio=RM_PRIO_LOW))
+		self.fireEvent(RMInfoRaceNoData())
 
 	def _updateracestatus(self,status):
 		if status<>self._racestatus:
 			self._racestatus=status
 			self._racestatustime=datetime.datetime.now()
-			self._tellracestatus(status,RM_PRIO_OOB)
-		elif (datetime.datetime.now()-self._racestatustime)>datetime.timedelta(minutes=1) and self._racestatus<>"RACE":
+			self._tellracestatus(status)
+		elif (datetime.datetime.now()-self._racestatustime)>datetime.timedelta(seconds=20) and self._racestatus<>"RACE":
 			self._racestatustime=datetime.datetime.now()
-			self._tellracestatus(self._racestatus,RM_PRIO_LOW)        
+			self._tellracestatus(self._racestatus)
 
-	def _tellracestatus(self,status,prio):
+	def _tellracestatus(self,status):
 		statevents={'WAITING':RMInfoRaceWaiting,'RACE':RMInfoRaceGoing,'FINISH':RMInfoRaceFinish,'NORACE':RMInfoRaceNoRace}    
 		event=statevents[status]
-		self.fireEvent(event(rmprio=prio))
+		self.fireEvent(event())
 
 	@handler("rmeventkartplacetime")
 	def _rmeventkartplacetime(self,place,kartId,lap,lapTime,unk1):
 		if place==1:
 			if self._isTargetKart(kartId):
 				if (not self._racebesttime) or lapTime<self._racebesttime:
-					self.fireEvent(RMInfoKartBestLap(rmprio=RM_PRIO_NORMAL))
+					self.fireEvent(RMInfoKartBestLap())
 					self._racebestlap=lap
 					self._racebesttime=lapTime
 					self._racehavebesttime=True
@@ -179,4 +183,4 @@ class RMAnalyzer(Component):
 					self._racehavebesttime=False
 					self._racebesttime=lapTime
 					self._racebestlap=lap
-					self.fireEvent(RMInfoKartLostBestLap(kartId,lapTime,rmprio=RM_PRIO_NORMAL))
+					self.fireEvent(RMInfoKartLostBestLap(kartId,lapTime))

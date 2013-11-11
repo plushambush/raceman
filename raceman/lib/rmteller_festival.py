@@ -4,7 +4,7 @@ from raceman.lib.rmsound_base import *
 from raceman.lib.config import *
 
 
-class RMTeller(Component):
+class RMTeller_Festival(Component):
 	"""Events - Phrases"""
 
 	@handler("rminfokartlap")

@@ -52,6 +52,25 @@ class RMSound_Pygame(RMSound):
 			self.flushEvents()
 
 
+	@handler("rmsound_driver_play_buffer_async")
+	def _on_rmsound_driver_play_buffer_async(self,buffer):
+		channel=mixer.find_channel()
+		sound=mixer.Sound(buffer)
+		channel.play(sound)
+
+
+	@handler("rmsound_driver_play_buffer_sync")
+	def _on_rmsound_driver_play_buffer_async(self,buffer):
+		channel=mixer.find_channel()
+		sound=mixer.Sound(buffer)
+		channel.play(sound)
+		while channel.get_busy():
+			self.flushEvents()
+
+
+
+
+
 	@handler("rmsound_driver_play_bgm")
 	def _on_rmsound_driver_play_bgm(self,filename):
 		mixer.music.load(filename)

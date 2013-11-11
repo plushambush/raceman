@@ -43,6 +43,23 @@ class RMSoundDriverPlayFileAsync(Event):
 	pass	
 	
 	
+class RMSoundDriverPlayBufferSync(Event):
+	"""Play audiobuffer (sync)
+	Parameters:
+		buffer - buffer to be played
+	"""
+	complete=True
+	pass
+
+class RMSoundDriverPlayBufferAsync(Event):
+	"""Play audiobuffer (async)
+	Parameters:
+		buffer - buffer to be played
+	"""
+	pass	
+	
+	
+	
 class RMSoundDriverPlayBGM(Event):
 	"""Play background music
 	Parameters:
@@ -80,6 +97,8 @@ class RMSoundPlayFile(Event):
 class RMSoundPlayStream(Event):
 	pass	
 
+class RMSoundPlayBuffer(Event):
+	pass
 
 class RMSoundPlayFileOOB(Event):
 	pass
@@ -130,6 +149,17 @@ class RMSound(Component):
 	@handler("rmsound_driver_play_stream_sync_complete")
 	def _on_rmsound_driver_play_stream_sync_complete(self,event,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
+
+	@handler("rmsound_play_buffer")
+	def _on_rmsound_play_buffer(self,buffer,rmprio=RM_PRIO_NORMAL):
+		self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayBufferSync(buffer),rmprio),self._bus)
+
+	@handler("rmsound_driver_play_buffer_sync_complete")
+	def _on_rmsound_driver_play_buffer_sync_complete(self,event,*args,**kwargs):
+		self.fireEvent(EQHandlerAvailable(),self._bus)
+
+
+
 
 	@handler("rmsound_say_message")
 	def on_rmsound_say_message(self,message,rmprio=RM_PRIO_NORMAL):

@@ -8,7 +8,7 @@ from raceman.lib.rmtts_base import *
 class RMTTS_Festival(RMTTS):
 	@handler("rmttsconvert_message")
 	@future()
-	def rmtts_convert_message(self,message,rmprio=RM_PRIO_NORMAL):
+	def rmtts_festival_convert_message(self,message,rmprio=RM_PRIO_NORMAL):
 		sock=socket.socket()
 		sock.connect((TTS_FESTIVAL_SERVER_HOST,TTS_FESTIVAL_SERVER_PORT))
 		sock.send((TTS_FESTIVAL_COMMAND % message).encode('utf-8'))

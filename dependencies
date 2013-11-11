@@ -1,5 +1,9 @@
 python 2.*
 swresample
-asterisk
+asterisk + datacard
 pygame
 circuits 2.*
+twisted + zope.interface
+festival + russian voice
+SAPI 5.*
+acapella alyona

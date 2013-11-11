@@ -16,7 +16,7 @@ import sys
 from raceman.lib.rmstream import RMStream,RMStreamEvent
 from raceman.lib.rmdecoder import RMDecoder,RMEventHeartBeat,RMEventUnknown
 from raceman.lib.rmanalyzer import RMAnalyzer,RMAnalyzerTarget
-from raceman.lib.rmteller import RMTeller
+from raceman.lib.rmteller_sapi import RMTeller_SAPI
 from raceman.lib.rmagisound import RMAGISound
 from raceman.lib.rmagi import AGI,AGIResult,AGIReady,AGICommand
 from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
@@ -26,6 +26,7 @@ from raceman.lib.config import config
 from raceman.lib.rmsound_pygame import *
 from raceman.lib.rmsound_base import *
 from raceman.lib.rmtts_festival import *
+from raceman.lib.rmtts_sapi import *
 from pdb import set_trace
 from os import environ
 
@@ -66,7 +67,9 @@ LP(channel='rminput')+
 RMStream(channel='rminput')+
 RMDecoder(channel='rminput')+
 RMAnalyzer()+
-RMTeller()+
-RMTTS_Festival()+
+#RMTeller()+
+RMTeller_SAPI()+
+#RMTTS_Festival()+
+RMTTS_SAPI()+
 RMSound_Pygame()
 ).run()

@@ -16,7 +16,7 @@ class RMSAPIServer(LineReceiver):
 		self.SAPI=win32com.client.Dispatch("SAPI.SpVoice")
 		self.Stream=win32com.client.Dispatch("SAPI.SpMemoryStream")
 		format=win32com.client.Dispatch("SAPI.SpAudioFormat")
-		format.Type=SAFT22kHz16BitMono
+		format.Type=SAFT16kHz16BitMono
 		self.Stream.Format=format
 		self.SAPI.AudioOutputStream=self.Stream
 			

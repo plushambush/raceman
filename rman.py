@@ -52,8 +52,8 @@ class Manager(Component):
 	@handler("rmstartup")
 	def _agistartupcomplete(self,trackID,classID,kartID):
 		self.fireEvent(RMParams('======STARTUP PARAMETERS:',sys.argv,environ.get('SDL_AUDIODRIVER','NO_DRIVER'),environ.get('SDL_DISKAUDIOFILE','NOFILE')))
-		self.fireEvent(RMAnalyzerTarget(trackID,classID,kartID))
 		self.fireEvent(Connect(config[trackID]['streamip'],config[trackID]['streamport'],channels="rminput"))
+		self.fireEvent(RMAnalyzerTarget(trackID,classID,kartID))		
 
 	@handler("started")
 	def _started(self,komponent):

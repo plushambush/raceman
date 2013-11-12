@@ -1,0 +1,4 @@
+* text=auto
+*.wav binary
+*.ogg binary
+sapi_server.py text eol=crlf

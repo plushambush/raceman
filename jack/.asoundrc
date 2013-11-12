@@ -1,0 +1,11 @@
+pcm.raceman_jack {
+	type plug
+	slave { pcm "raceman_jack_port" }
+}
+
+pcm.raceman_jack_port {
+	type jack
+	playback_ports {
+		0 {@func getenv vars [RACEMAN_JACK_PORT] default "playback_mono"}
+	}
+}

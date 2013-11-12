@@ -1,6 +1,51 @@
 #coding=utf-8
+
+#RMSound configuration 
+RMS_SOUND_DIR='/home/ricochet/Projects/raceman/sounds/'
+RMS_SOUND_THEME='.'
+
+RMS_CHANNEL_BGM=0
+RMS_CHANNEL_TICKER=1
+RMS_CHANNEL_SYSTEM=2
+RMS_CHANNEL_TARGET=3
+RMS_CHANNEL_OTHER=4
+RMS_RESERVED_CHANNELS=RMS_CHANNEL_OTHER+1
+RMS_NUM_CHANNELS=RMS_RESERVED_CHANNELS+5
+
+RMS_SDL_AUDIODRIVER='pulse'
+RMS_SDL_AUDIOFILE='/dev/stdout'
+RMS_FREQUENCY=16000
+RMS_BGM_VOLUME=0.2
+
+RMS_PYGAME_SAMPLESIZE=-16
+RMS_PYGAME_SAMPLECHANNELS=1
+RMS_PYGAME_FREQUENCY=16000
+
+#Sounds
+SOUND_STARTSTOP='gong.wav'
+SOUND_BGM='taxi.wav'
+SOUND_ACHIEVE='achv.wav'
+SOUND_LOST='boo.wav'
+SOUND_GOOD='peew.wav'
+SOUND_BAD='zzz.wav'
+
+
+
+#tts_festival configuration
+TTS_FESTIVAL_COMMAND=u"(tts_textall \"%s\" \'file)(quit)\n"
+TTS_FESTIVAL_SERVER_HOST='127.0.0.1'
+TTS_FESTIVAL_SERVER_PORT=1314
+TTS_FESTIVAL_BUFFER_SIZE=10*44100*2
+
+
+TTS_SAPI_SERVER_HOST='192.168.56.101'
+TTS_SAPI_SERVER_PORT=40040
+TTS_SAPI_BUFFER_SIZE=10*44100*2
+
+
+
 config={
-			'arena': { 
+			u'arena': { 
 				'name':u"Арена",
 				'streamip':'50.56.75.58',
 				'streamport':50007,
@@ -61,7 +106,7 @@ config={
 					}
 				}
 			},
-						'forza': { 
+			u'forza': { 
 				'name':u"Форза",
 				'streamip':'50.56.75.58',
 				'streamport':50002,

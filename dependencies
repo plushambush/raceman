@@ -1,9 +1,16 @@
+Linux part:
+
 python 2.*
 swresample
 asterisk + datacard
 pygame
 circuits 2.*
-twisted + zope.interface
 festival + russian voice
-SAPI 5.*
-acapella alyona
+
+Windows part:
+
+python 2.*
+win32com
+twisted + zope.interface
+SAPI
+Acapella alyona (optional)

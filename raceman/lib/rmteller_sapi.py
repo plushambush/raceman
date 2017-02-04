@@ -14,15 +14,15 @@ class RMTeller_SAPI(Component):
 
 	@handler("rminfoconnected")
 	def _connected(self):
-		self.fireEvent(RMSoundSayMessage(u"Установлено соединение с сервером."))
+		self.fireEvent(RMSoundSayMessage(u"Установлена связь с сервером."))
 
 	@handler("rminfodisconnected")
 	def _disconnected(self):
-		self.fireEvent(RMSoundSayMessage(u"Соединение с сервером разорвано."))
+		self.fireEvent(RMSoundSayMessage(u"Разорвана связь с сервером."))
 
 	@handler("rminfotrackselected")
 	def _rminfotrackselected(self,track):
-		self.fireEvent(RMSoundSayMessage(u"Добро пожаловать на трэк %s." % track))
+		self.fireEvent(RMSoundSayMessage(u"Добро пожаловать на трэк - %s. Устанавливаю связь с сервером." % track))
 
 	@handler("rminfokartselected")
 	def _rminfokartselected(self,kart):

@@ -70,12 +70,7 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revision: 336716 $")
 
  ***/
  
- 
-#define INPUT_FREQUENCY 16000
-#define OUTPUT_FREQUENCY 8000
-#define SAMPLE_BUFFER_SIZE 1600
 #define MAXARGS 10 
- 
 static char *app = "extplay";
 
 
@@ -181,18 +176,11 @@ static int extplay(struct ast_channel *chan, const char *data)
 	struct myframe {
 		struct ast_frame f;
 		char offset[AST_FRIENDLY_OFFSET];
-		uint8_t frdata[SAMPLE_BUFFER_SIZE];
+		uint8_t frdata[160];
 	} myf = {
 		.f = { 0, },
 	};
 
-	uint8_t res_buffer[SAMPLE_BUFFER_SIZE];
-	
-	const uint8_t *res_buffer_ptr=res_buffer;
-	uint8_t *out_buffer_ptr=myf.frdata;
-	
-	struct SwrContext * swr;
-	
 	ast_format_clear(&owriteformat);
 
 	if (ast_strlen_zero(data)) {
@@ -214,31 +202,6 @@ static int extplay(struct ast_channel *chan, const char *data)
 		return -1;
 	}
 
-	swr=swr_alloc_set_opts(
-	NULL,
-	AV_CH_LAYOUT_MONO,
-	AV_SAMPLE_FMT_S16,
-	OUTPUT_FREQUENCY,
-	AV_CH_LAYOUT_MONO,
-	AV_SAMPLE_FMT_S16,
-	INPUT_FREQUENCY,
-	0,
-	NULL);
-	// Set up resampler
-	if (swr==NULL) {
-		ast_log(LOG_WARNING,"Unable to allocate resampler\n");
-		return -1;
-	}
-	res=swr_init(swr);
-	if (res!=0) {
-		ast_log(LOG_WARNING,"Unable to initialize resampler. Error: %x\n",res);
-		swr_free(&swr);
-		return -1;
-	}
-
-	ast_log(LOG_WARNING,"Initialized resampler. Buffer size: %d Input Freq: %d Output freq: %d\n",SAMPLE_BUFFER_SIZE, INPUT_FREQUENCY, OUTPUT_FREQUENCY);
-	
-	
 	res = exec_extplayer(data, chan,fds[1]);
 	
 	ast_log(LOG_WARNING,"Executed external process %s with pid %d\n",data,res);
@@ -252,10 +215,8 @@ static int extplay(struct ast_channel *chan, const char *data)
 		for (;;) {
 			ms = ast_tvdiff_ms(next, ast_tvnow());
 			if (ms <= 0) {
-				res = timed_read(fds[0], res_buffer, sizeof(res_buffer), timeout);
+				res = timed_read(fds[0], myf.frdata, sizeof(myf.frdata), timeout);
 				if (res > 0) {
-					res=swr_convert(swr,&out_buffer_ptr,SAMPLE_BUFFER_SIZE,&res_buffer_ptr,res/2);
-					if (res >0) {
 						myf.f.frametype = AST_FRAME_VOICE;
 						ast_format_set(&myf.f.subclass.format, AST_FORMAT_SLINEAR, 0);
 						myf.f.datalen = res;
@@ -270,7 +231,6 @@ static int extplay(struct ast_channel *chan, const char *data)
 							res = -1;
 							break;
 						}
-					}
 				} else {
 					ast_debug(1, "No more sound\n");
 					res = 0;
@@ -308,7 +268,6 @@ static int extplay(struct ast_channel *chan, const char *data)
 	if (!res && owriteformat.id)
 		ast_set_write_format(chan, &owriteformat);
 	
-	swr_free(&swr);
 		
 	return res;
 }

@@ -4,7 +4,7 @@ from pygame import mixer
 from os import environ
 from raceman.lib.rmsound_base import *
 from raceman.lib.config import *
-from circuits import Component,Event,handler,future
+from circuits import Component,Event,handler
 from StringIO import StringIO
 
 
@@ -84,7 +84,6 @@ class RMSound_Pygame(RMSound):
 
 
 	@handler("rmsound_driver_stop_all")
-	@future()
 	def _on_rmsound_driver_stop_all(self):
 		mixer.fadeout(1000)
 		mixer.stop()

@@ -4,7 +4,7 @@ python 2.*
 swresample
 asterisk + datacard
 pygame
-circuits 2.*
+circuits 2.* before 084ccf35f3ce14717e91f5004dc0426c48b25205
 festival + russian voice
 
 Windows part:

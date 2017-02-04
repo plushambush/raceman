@@ -22,7 +22,7 @@ from raceman.lib.rmagi import AGI,AGIResult,AGIReady,AGICommand
 from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
 from signal import SIGHUP
 from exceptions import AttributeError
-from raceman.lib.config import config
+from raceman.lib.config import config,RMSYSTEM_LOGFILE
 from raceman.lib.rmsound_pygame import *
 from raceman.lib.rmsound_base import *
 from raceman.lib.rmtts_festival import *
@@ -61,7 +61,7 @@ class Manager(Component):
 
 
 (Manager()+
-Debugger(logger=Logger(type='file',filename="/home/ricochet/Projects/raceman/raceman.log",level="DEBUG",name='rman'),IgnoreEvents=['rmsound_driver_play_stream_sync','rmsound_play_stream','rmsound_driver_play_stream_sync_complete'])+
+Debugger(logger=Logger(type='file',filename=RMSYSTEM_LOGFILE,level="DEBUG",name='rman'),IgnoreEvents=['rmsound_driver_play_stream_sync','rmsound_play_stream','rmsound_driver_play_stream_sync_complete'])+
 TCPClient(channel='rminput')+
 LP(channel='rminput')+
 RMStream(channel='rminput')+

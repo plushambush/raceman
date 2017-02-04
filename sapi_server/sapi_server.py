@@ -7,6 +7,7 @@ from twisted.internet import reactor
 SPF_IS_XML=8
 SAFT16kHz16BitMono=18
 SAFT22kHz16BitMono=22
+SAFT8kHz16BitMono = 6
 ServerHost='0.0.0.0'
 ServerPort=40040
 
@@ -16,7 +17,7 @@ class RMSAPIServer(LineReceiver):
 		self.SAPI=win32com.client.Dispatch("SAPI.SpVoice")
 		self.Stream=win32com.client.Dispatch("SAPI.SpMemoryStream")
 		format=win32com.client.Dispatch("SAPI.SpAudioFormat")
-		format.Type=SAFT16kHz16BitMono
+		format.Type=SAFT8kHz16BitMono
 		self.Stream.Format=format
 		self.SAPI.AudioOutputStream=self.Stream
 			

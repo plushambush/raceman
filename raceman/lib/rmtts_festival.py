@@ -1,5 +1,4 @@
 from circuits import handler,Component,Event
-from circuits.core.futures import future
 import socket
 from raceman.lib.config import *
 from raceman.lib.rmsound_base import *
@@ -7,7 +6,6 @@ from raceman.lib.rmtts_base import *
 
 class RMTTS_Festival(RMTTS):
 	@handler("rmttsconvert_message")
-	@future()
 	def rmtts_festival_convert_message(self,message,rmprio=RM_PRIO_NORMAL):
 		sock=socket.socket()
 		sock.connect((TTS_FESTIVAL_SERVER_HOST,TTS_FESTIVAL_SERVER_PORT))

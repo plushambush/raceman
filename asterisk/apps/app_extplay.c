@@ -174,7 +174,7 @@ static int extplay(struct ast_channel *chan, const char *data)
 	int fds[2];
 	int ms = -1;
 	int pid = -1;
-	int owriteformat;
+	struct ast_format owriteformat;
 	int timeout = 10000;
 	struct timeval next;
 	struct ast_frame *f;
@@ -193,6 +193,7 @@ static int extplay(struct ast_channel *chan, const char *data)
 	
 	struct SwrContext * swr;
 	
+	ast_format_clear(&owriteformat);
 
 	if (ast_strlen_zero(data)) {
 		ast_log(LOG_WARNING, "Extplay requires an argument (filename)\n");
@@ -206,8 +207,8 @@ static int extplay(struct ast_channel *chan, const char *data)
 	
 	ast_stopstream(chan);
 
-	owriteformat = chan->writeformat;
-	res = ast_set_write_format(chan, AST_FORMAT_SLINEAR);
+	ast_format_copy(&owriteformat, ast_channel_writeformat(chan));	
+	res = ast_set_write_format_by_id(chan, AST_FORMAT_SLINEAR);
 	if (res < 0) {
 		ast_log(LOG_WARNING, "Unable to set write format to signed linear\n");
 		return -1;
@@ -256,17 +257,16 @@ static int extplay(struct ast_channel *chan, const char *data)
 					res=swr_convert(swr,&out_buffer_ptr,SAMPLE_BUFFER_SIZE,&res_buffer_ptr,res/2);
 					if (res >0) {
 						myf.f.frametype = AST_FRAME_VOICE;
-						myf.f.subclass.codec = AST_FORMAT_SLINEAR;
-						myf.f.datalen = res*2;
-						myf.f.samples = res;
+						ast_format_set(&myf.f.subclass.format, AST_FORMAT_SLINEAR, 0);
+						myf.f.datalen = res;
+						myf.f.samples = res / 2;
 						myf.f.mallocd = 0;
 						myf.f.offset = AST_FRIENDLY_OFFSET;
 						myf.f.src = __PRETTY_FUNCTION__;
 						myf.f.delivery.tv_sec = 0;
 						myf.f.delivery.tv_usec = 0;
 						myf.f.data.ptr = myf.frdata;
-						int res1 = ast_write(chan, &myf.f);
-						if (res1<0) {
+						if (ast_write(chan, &myf.f) < 0) {
 							res = -1;
 							break;
 						}
@@ -305,8 +305,8 @@ static int extplay(struct ast_channel *chan, const char *data)
 	
 	if (pid > -1)
 		kill(pid, SIGKILL);
-	if (!res && owriteformat)
-		ast_set_write_format(chan, owriteformat);
+	if (!res && owriteformat.id)
+		ast_set_write_format(chan, &owriteformat);
 	
 	swr_free(&swr);
 		

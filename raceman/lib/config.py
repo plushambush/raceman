@@ -1,5 +1,7 @@
 #coding=utf-8
 
+RMSYSTEM_LOGFILE='/var/log/raceman.log'
+
 #RMSound configuration 
 RMS_SOUND_DIR='/home/ricochet/Projects/raceman/sounds/'
 RMS_SOUND_THEME='.'
@@ -19,7 +21,7 @@ RMS_BGM_VOLUME=0.2
 
 RMS_PYGAME_SAMPLESIZE=-16
 RMS_PYGAME_SAMPLECHANNELS=1
-RMS_PYGAME_FREQUENCY=16000
+RMS_PYGAME_FREQUENCY=8000
 
 #Sounds
 SOUND_STARTSTOP='gong.wav'
@@ -29,7 +31,7 @@ SOUND_LOST='boo.wav'
 SOUND_GOOD='peew.wav'
 SOUND_BAD='zzz.wav'
 
-
+TTS_CACHE_DIR='/var/cache/raceman'
 
 #tts_festival configuration
 TTS_FESTIVAL_COMMAND=u"(tts_textall \"%s\" \'file)(quit)\n"
@@ -38,7 +40,7 @@ TTS_FESTIVAL_SERVER_PORT=1314
 TTS_FESTIVAL_BUFFER_SIZE=10*44100*2
 
 
-TTS_SAPI_SERVER_HOST='192.168.56.101'
+TTS_SAPI_SERVER_HOST='192.168.56.102'
 TTS_SAPI_SERVER_PORT=40040
 TTS_SAPI_BUFFER_SIZE=10*44100*2
 

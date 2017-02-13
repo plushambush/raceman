@@ -12,7 +12,7 @@ class RMTeller_SAPI(Component):
 		self.fireEvent(RMSoundSayMessage(u"Время круга %s." % lapTime.tostr(compact=True,tosay=True)))
 
 
-	@handler("rminfoconnected")
+	@handler("rminfoconnected",channel='infoevents')
 	def _connected(self):
 		self.fireEvent(RMSoundSayMessage(u"Установлена связь с сервером."))
 
@@ -32,7 +32,7 @@ class RMTeller_SAPI(Component):
 	def _rminforacewaiting(self):
 		self.fireEvent(RMSoundSayMessage(u"Ожидаем начала гонки."))
 
-	@handler("rminforacegoing")
+	@handler("rminforacegoing",channel='infoevents')
 	def _rminforacegoing(self):
 		self.fireEvent(RMSoundPlayFile(SOUND_STARTSTOP))
 		self.fireEvent(RMSoundPlayBGM(SOUND_BGM))

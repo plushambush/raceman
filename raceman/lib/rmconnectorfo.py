@@ -1,7 +1,8 @@
 #!/usr/bin/python  
 
-from circuits import Component,BaseComponent, Debugger,handler,Event,Timer
+from circuits import Component,BaseComponent, Debugger,handler,Event,Timer,TimeoutError
 from circuits.protocols.websocket import WebSocketCodec
+from circuits.web.client import request,Client
 from exceptions import ValueError
 from raceman.lib.racingtime import RacingTime
 from raceman.lib.config import *
@@ -40,43 +41,33 @@ class FORaceDetector(FOComponent):
 	def __init__(self,*args,**kwargs):
 		super(FORaceDetector,self).__init__(*args,**kwargs)
 		self.change_state('READY')
-		self._webclient=WebClient(channel='rd-webclient')
+		self._webclient=Client(channel='rd-webclient')
 		self._webclient.register(self)
 		
 
 	@handler("FORaceDetectorConnect","FORaceDetectorRediscover")
 	def state_discovering(self):
 		self.change_state('DISCOVERING')
-		self.fire(WebRequest(\
+		resp = yield self.call(request(\
 			method='GET',\
 			path='http://club.forzaonline.ru/race/GetLastRaceId',\
 			headers={'User-Agent':USERAGENT,'Host':'club.forzaonline.ru'}),self._webclient)
 			
-	@handler("response",channel='rd-webclient')
-	def state_subscribing(self,resp):
 		self.change_state('WAITING')
-		data=resp.body.read()
+		data=resp.value.body.read()
 		js=json.loads(data)
 		raceid=js[u'id']
 		self.fire(FOSubscribeRace(raceid))
 		self._subscribed_race=raceid
-		self._timer=Timer(10,FORaceDetectorSubscribeTimer()).register(self)
-		
-	@handler("FOCommandHB")
-	def state_waiting(self,time):
-		if (self._state=='WAITING'):
+		try:
+			hb = yield self.wait("FOCommandHB",timeout=100)
 			self.change_state('ACTIVE')
-			self._timer.unregister()
 			self.fire(FORaceDetectorRaceStarted(self._subscribed_race))
-			
-	@handler("FORaceDetectorSubscribeTimer")
-	def state_changed(self):
-		if (self._state=='WAITING'):
-			self.change_state('WRONG')
-			self._timer.unregister()
-			self.fire(FOUnsubscribeRace(self._subscribed_race))
+		except TimeoutError:
+			self.change_state("TIMEOUT")
+			self.fire(FOUnsubscribeRace(raceid))
 			self.fire(FORaceDetectorRediscover())
-		
+			
 	@handler("FOCommandOnlineStatus")
 	def state_stopped(self,online,regn,raceid):
 		if (online and raceid==self._subscribed_race and self._state=='ACTIVE'):

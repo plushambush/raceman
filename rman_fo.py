@@ -57,7 +57,7 @@ class Manager(Component):
 		
 
 (Manager()+
-Debugger(IgnoreEvents=[])+
+Debugger(IgnoreEvents=['read','_read'])+
 RMConnectorFO()+
 RMTeller_SAPI()+
 RMTTS_SAPI()+

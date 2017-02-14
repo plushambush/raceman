@@ -54,14 +54,12 @@ class Manager(Component):
 	@handler("started")
 	def _started(self,komponent):
 		self.fireEvent(RMStartup(sys.argv[1],sys.argv[2],sys.argv[3]))
-
+		
 
 (Manager()+
-Debugger(IgnoreEvents=['rmsound_driver_play_stream_sync','rmsound_play_stream','rmsound_driver_play_stream_sync_complete'])+
+Debugger(IgnoreEvents=[])+
 RMConnectorFO()+
-#RMTeller()+
 RMTeller_SAPI()+
-#RMTTS_Festival()+
 RMTTS_SAPI()+
 RMSound_Pygame()
 ).run()

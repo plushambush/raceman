@@ -171,7 +171,7 @@ class RMConnectorFO(FOComponent):
 	@handler("SignalrStarted",channel='connector')
 	def do_started(self,comp):
 		self.fire(RMConnectorStarted())
-		self.fire(RMInfoConnected())
+		self.fire(RMInfoConnected(),'infoevents')
 		self.fire(FORaceDetectorConnect())
 
 	@handler("FORaceDetectorRaceStarted")

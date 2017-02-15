@@ -7,7 +7,7 @@ import pdb
 
 class RMTTS_SAPI(RMTTS):
 	cache_prefix='SAPI'
-	@handler("rmttsconvert_message")
+	@handler("RMTTSConvertMessage")
 	def rmtts_sapi_convert_message(self,message,rmprio=RM_PRIO_NORMAL):
 		msg=self.check_cache(message)
 		if (not msg):

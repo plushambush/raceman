@@ -36,44 +36,62 @@ class FORaceDetectorRaceStopped(Event):
 	Params:
 	- race id
 	"""
+	
+class FORaceDetectorReady(Event):
+	""" Ready and waiting for race
+	"""
+
 
 class FORaceDetector(FOComponent):
 
 	def __init__(self,*args,**kwargs):
 		super(FORaceDetector,self).__init__(*args,**kwargs)
 		self.change_state('READY')
-		self._webclient=Client(channel='rd-webclient')
+		self._webclient=WebClient(channel='rd-webclient')
 		self._webclient.register(self)
+		self._subscribed_race=None
+		self.fire(FORaceDetectorReady())
 		
 
 	@handler("FORaceDetectorConnect","FORaceDetectorRediscover")
 	def state_discovering(self):
 		self.change_state('DISCOVERING')
-		resp = yield self.call(request(\
+		self.fire(WebRequest(\
 			method='GET',\
 			path='http://club.forzaonline.ru/race/GetLastRaceId',\
 			headers={'User-Agent':USERAGENT,'Host':'club.forzaonline.ru'}),self._webclient)
 			
+	@handler("response",channel='rd-webclient')
+	def state_subscribing(self,resp):
 		self.change_state('WAITING')
-		data=resp.value.body.read()
+		data=resp.body.read()
 		js=json.loads(data)
 		raceid=js[u'id']
 		self.fire(FOSubscribeRace(raceid))
 		self._subscribed_race=raceid
-		try:
-			hb = yield self.wait("FOCommandHB",timeout=10)
+		self._timer=Timer(10,FORaceDetectorSubscribeTimer()).register(self)
+		
+	@handler("FOCommandHB")
+	def state_waiting(self,time):
+		if (self._state=='WAITING'):
 			self.change_state('ACTIVE')
+			self._timer.unregister()
 			self.fire(FORaceDetectorRaceStarted(self._subscribed_race))
-		except TimeoutError:
-			self.change_state("TIMEOUT")
-			self.fire(FOUnsubscribeRace(raceid))
-			self.fire(FORaceDetectorRediscover())
 			
+	@handler("FORaceDetectorSubscribeTimer")
+	def state_changed(self):
+		if (self._state=='WAITING'):
+			self.change_state('WRONG')
+			self._timer.unregister()
+			self.fire(FOUnsubscribeRace(self._subscribed_race))
+			self.fire(FORaceDetectorRediscover())
+		
 	@handler("FOCommandOnlineStatus")
 	def state_stopped(self,online,regn,raceid):
 		if (online and raceid==self._subscribed_race and self._state=='ACTIVE'):
 			self.change_state('STOPPED')
 			self.fire(FORaceDetectorRaceStopped(self._subscribed_race))
+
 	
 class FOCommand(Event):
 	""" FO Command
@@ -174,6 +192,10 @@ class RMConnectorFO(FOComponent):
 	def on_fo_race_detector_race_stopped(self,raceid):
 		self.fire(RMInfoRaceStopped(),'infoevents')
 
+	@handler("FORaceDetectorReady")
+	def on_racedetector_ready(self):
+		self.fire(RMInfoRaceWaiting(),'infoevents')
+
 	@handler("RMConnectorConfigure")
 	def on_rm_connector_configure(self,config,kartclass,kartid):
 		self._config=config
@@ -190,12 +212,11 @@ class RMConnectorFO(FOComponent):
 			pt=RacingTime.fromint(int(comp[u'pt']))
 			bl=RacingTime.fromint(int(comp[u'bl']))
 			al=RacingTime.fromint(int(comp[u'cs'][u'al']))
-			self.fire(RMInfoKartLap(self._target,ll,pt),'infoevents')
-			if ll>bl:
+			if ll<al:
 				self.fire(RMInfoKartLapBetter(al),'infoevents')
-			elif ll<bl:
+			elif ll>al:
 				self.fire(RMInfoKartLapWorse(al),'infoevents')
-
+			self.fire(RMInfoKartLap(self._target,ll,pt),'infoevents')
 
 
 	@handler("SignalrHubMessage",channel='connector')

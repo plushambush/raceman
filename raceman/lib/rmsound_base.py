@@ -139,7 +139,7 @@ class RMSound(Component):
 	def _on_rmsound_play_file(self,filename,rmprio=RM_PRIO_NORMAL):
 		self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayFileSync(SoundFullPath(filename)),rmprio),self._bus)
 
-	@handler("RMSoundDriverPLayFileSync_complete")
+	@handler("RMSoundDriverPlayFileSync_complete")
 	def _on_rmsound_driver_play_file_sync_complete(self,event,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
 

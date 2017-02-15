@@ -42,7 +42,7 @@ class RMSound_Pygame(RMSound):
 		channel.play(sound)
 
 
-	@handler("RMSoundDriverPlayStreamAsync")
+	@handler("RMSoundDriverPlayStreamSync")
 	def _on_rmsound_driver_play_stream_async(self,stream):
 		channel=mixer.find_channel()
 		SIO=StringIO(stream)
@@ -59,7 +59,7 @@ class RMSound_Pygame(RMSound):
 		channel.play(sound)
 
 
-	@handler("RMSoundDriverPlayBufferAsync")
+	@handler("RMSoundDriverPlayBufferSync")
 	def _on_rmsound_driver_play_buffer_async(self,buffer):
 		channel=mixer.find_channel()
 		sound=mixer.Sound(buffer)

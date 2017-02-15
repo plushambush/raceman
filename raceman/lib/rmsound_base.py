@@ -130,50 +130,50 @@ class RMSound(Component):
 	def _on_started(self,komponent):
 		self.fireEvent(RMSoundDriverInit(),self._bus)
 		
-	@handler("rmsound_driver_init_success")
+	@handler("RMSOundDriverInit_success")
 	def _on_rmsound_driver_init_success(self,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
 		
-	@handler("rmsound_play_file")
+	@handler("RMSoundPlayFile")
 	def _on_rmsound_play_file(self,filename,rmprio=RM_PRIO_NORMAL):
 		self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayFileSync(SoundFullPath(filename)),rmprio),self._bus)
 
-	@handler("rmsound_driver_play_file_sync_complete")
+	@handler("RMSoundDriverPLayFileSync_complete")
 	def _on_rmsound_driver_play_file_sync_complete(self,event,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
 
-	@handler("rmsound_play_stream")
+	@handler("RMSoundPlayStream")
 	def _on_rmsound_play_stream(self,stream,rmprio=RM_PRIO_NORMAL):
 		self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayStreamSync(stream),rmprio),self._bus)
 
-	@handler("rmsound_driver_play_stream_sync_complete")
+	@handler("RMSoundDriverPlayStreamSync_complete")
 	def _on_rmsound_driver_play_stream_sync_complete(self,event,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
 
-	@handler("rmsound_play_buffer")
+	@handler("RMSoundPlayBuffer")
 	def _on_rmsound_play_buffer(self,buffer,rmprio=RM_PRIO_NORMAL):
 		self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayBufferSync(buffer),rmprio),self._bus)
 
-	@handler("rmsound_driver_play_buffer_sync_complete")
+	@handler("RMSoundDriverPlayBufferSync_complete")
 	def _on_rmsound_driver_play_buffer_sync_complete(self,event,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
 
 
 
 
-	@handler("rmsound_say_message")
+	@handler("RMSoundSayMessage")
 	def on_rmsound_say_message(self,message,rmprio=RM_PRIO_NORMAL):
 		self.fireEvent(RMTTSConvertMessage(message,rmprio))
 
-	@handler("rmsound_play_bgm")
+	@handler("RMSoundPlayBGM")
 	def _on_rmsound_play_bgm(self,filename):
 		self.fireEvent(RMSoundDriverPlayBGM(SoundFullPath(filename)))
 		
-	@handler("rmsound_stop_bgm")
+	@handler("RMSoundStopBGM")
 	def _on_rmsound_stop_bgm(self):
 		self.fireEvent(RMSoundDriverStopBGM())
 		
-	@handler("rmsound_stop_all")
+	@handler("RMSoundStopAll")
 	def _on_rmsound_stop_all(self):
 		self.fireEvent(RMSoundStopAll())
 		

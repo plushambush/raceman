@@ -3,7 +3,7 @@
 RMSYSTEM_LOGFILE='/var/log/raceman.log'
 
 #RMSound configuration 
-RMS_SOUND_DIR='/home/ricochet/Projects/raceman/sounds/'
+RMS_SOUND_DIR='/home/ricochet/Projects/Programming/raceman/sounds/'
 RMS_SOUND_THEME='.'
 
 RMS_CHANNEL_BGM=0

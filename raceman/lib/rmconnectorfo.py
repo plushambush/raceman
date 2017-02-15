@@ -60,7 +60,7 @@ class FORaceDetector(FOComponent):
 		self.fire(FOSubscribeRace(raceid))
 		self._subscribed_race=raceid
 		try:
-			hb = yield self.wait("FOCommandHB",timeout=100)
+			hb = yield self.wait("FOCommandHB",timeout=50)
 			self.change_state('ACTIVE')
 			self.fire(FORaceDetectorRaceStarted(self._subscribed_race))
 		except TimeoutError:
@@ -167,11 +167,11 @@ class RMConnectorFO(FOComponent):
 
 	@handler("FORaceDetectorRaceStarted")
 	def on_fo_race_detector_race_started(self,raceid):
-		self.fire(RMInfoRaceGoing())
+		self.fire(RMInfoRaceGoing(),'infoevents')
 		
 	@handler("FORaceDetectorRaceStopped")	
 	def on_fo_race_detector_race_stopped(self):
-		self.fire(RMInfoRaceFinish())
+		self.fire(RMInfoRaceFinish(),'infoevents')
 
 	@handler("RMConnectorConfigure")
 	def on_rm_connector_configure(self,config,kartclass,kartid):
@@ -187,11 +187,11 @@ class RMConnectorFO(FOComponent):
 			ll=RacingTime.fromint(int(comp[u'll']))
 			pt=RacingTime.fromint(int(comp[u'pt']))
 			bl=RacingTime.fromint(int(comp[u'bl']))
-			self.fire(RMInfoKartLap(self._target,ll,pt))
+			self.fire(RMInfoKartLap(self._target,ll,pt),'infoevents')
 			if ll>bl:
-				self.fire(RMInfoKartLapBetter())
+				self.fire(RMInfoKartLapBetter(),'infoevents')
 			elif ll<bl:
-				self.fire(RMInfoKartLapWorse())
+				self.fire(RMInfoKartLapWorse(),'infoevents')
 
 
 

@@ -4,6 +4,7 @@ from raceman.lib.eventqueue import *
 from raceman.lib.prio import *
 from raceman.lib.rmtts_base import *
 from raceman.lib.config import *
+import pdb
 
 class RMSoundDriverInit(Event):
 	"""Initialize sound driver
@@ -130,7 +131,7 @@ class RMSound(Component):
 	def _on_started(self,komponent):
 		self.fireEvent(RMSoundDriverInit(),self._bus)
 		
-	@handler("RMSOundDriverInit_success")
+	@handler("RMSoundDriverInit_success")
 	def _on_rmsound_driver_init_success(self,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
 		

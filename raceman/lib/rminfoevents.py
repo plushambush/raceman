@@ -26,7 +26,10 @@ class RMInfoKartLostBestLap(Event):
 	"""Kart lost best lap"""
     
 class RMInfoKartLapBetter(Event):
-	"""Kart lap time is better then average"""
+	"""Kart lap time is better then average
+	Params:
+		- Avgtime - average time
+	"""
 
 class RMInfoKartLapWorse(Event):
 	"""Kart lap time is worse then average"""

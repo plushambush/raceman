@@ -10,6 +10,7 @@ from raceman.lib.rminfoevents import *
 from raceman.lib.rmconnectorevents import *
 import circuits  
 from raceman.lib.signalr import *
+import pdb
 				
 ###########################################################################################################				
 class FORaceDetectorConnect(Event):
@@ -60,7 +61,7 @@ class FORaceDetector(FOComponent):
 		self.fire(FOSubscribeRace(raceid))
 		self._subscribed_race=raceid
 		try:
-			hb = yield self.wait("FOCommandHB",timeout=50)
+			hb = yield self.wait("FOCommandHB",timeout=10)
 			self.change_state('ACTIVE')
 			self.fire(FORaceDetectorRaceStarted(self._subscribed_race))
 		except TimeoutError:
@@ -170,28 +171,30 @@ class RMConnectorFO(FOComponent):
 		self.fire(RMInfoRaceGoing(),'infoevents')
 		
 	@handler("FORaceDetectorRaceStopped")	
-	def on_fo_race_detector_race_stopped(self):
-		self.fire(RMInfoRaceFinish(),'infoevents')
+	def on_fo_race_detector_race_stopped(self,raceid):
+		self.fire(RMInfoRaceStopped(),'infoevents')
 
 	@handler("RMConnectorConfigure")
 	def on_rm_connector_configure(self,config,kartclass,kartid):
 		self._config=config
 		self._kartclass=kartclass
-		self._target=kartid
+		self._target=int(kartid)
 
 
 
-	@handler("FOCommandComp")
+	@handler("FOCommandComp",channel='connector')
 	def on_fo_command_comp(self,comp):
+#		pdb.set_trace()
 		if int(comp[u'nn'])==self._target:
 			ll=RacingTime.fromint(int(comp[u'll']))
 			pt=RacingTime.fromint(int(comp[u'pt']))
 			bl=RacingTime.fromint(int(comp[u'bl']))
+			al=RacingTime.fromint(int(comp[u'cs'][u'al']))
 			self.fire(RMInfoKartLap(self._target,ll,pt),'infoevents')
 			if ll>bl:
-				self.fire(RMInfoKartLapBetter(),'infoevents')
+				self.fire(RMInfoKartLapBetter(al),'infoevents')
 			elif ll<bl:
-				self.fire(RMInfoKartLapWorse(),'infoevents')
+				self.fire(RMInfoKartLapWorse(al),'infoevents')
 
 
 

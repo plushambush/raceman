@@ -2,7 +2,7 @@ from circuits.core import Component,Event,handler
 from raceman.lib.rmqueue import RMQueue,RMQItem
 import Queue
 import sys
-
+import pdb
 
 class EQHaveEvent(Event):
 	"""Fired when EventQueue has new event"""

@@ -1,9 +1,5 @@
 from circuits.core import Event
 
-class RMInfoConnected(Event):
-	"""Conector is connected
-	"""	
-	
 class RMInfoRaceGoing(Event):
 	"""Race is started
 	"""
@@ -11,6 +7,17 @@ class RMInfoRaceGoing(Event):
 class RMInfoRaceStopped(Event):
 	"""Race is stopped
 	"""
+
+class RMInfoRaceWaiting(Event):
+	"""Waiting for race start"""
+
+class RMInfoRaceNoRace(Event):
+	"""No race now"""
+
+class RMInfoRaceNoData(Event):
+	"""No data about race"""
+
+
 	
 class RMInfoKartLap(Event):
 	"""Target kart finished lap
@@ -39,18 +46,6 @@ class RMInfoKartSelected(Event):
 
 class RMInfoTrackSelected(Event):
 	"""Track selected as target"""
-
-class RMInfoDisconnected(Event):
-	"""Disconnected from the server"""
-
-class RMInfoRaceWaiting(Event):
-	"""Waiting for race start"""
-
-class RMInfoRaceNoRace(Event):
-	"""No race now"""
-
-class RMInfoRaceNoData(Event):
-	"""No data about race"""
 
 
 

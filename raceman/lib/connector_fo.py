@@ -182,6 +182,7 @@ class RMConnectorFO(FOComponent):
 	def do_started(self,comp):
 		self.fire(RMConnectorStarted())
 		self.fire(RMInfoConnected(),'infoevents')
+		self.fire(RMInfoRaceWaiting(),'infoevents')		
 		self.fire(FORaceDetectorConnect())
 
 	@handler("FORaceDetectorRaceStarted")
@@ -191,10 +192,6 @@ class RMConnectorFO(FOComponent):
 	@handler("FORaceDetectorRaceStopped")	
 	def on_fo_race_detector_race_stopped(self,raceid):
 		self.fire(RMInfoRaceStopped(),'infoevents')
-
-	@handler("FORaceDetectorReady")
-	def on_racedetector_ready(self):
-		self.fire(RMInfoRaceWaiting(),'infoevents')
 
 	@handler("RMConnectorConfigure")
 	def on_rm_connector_configure(self,config,kartclass,kartid):
@@ -206,7 +203,6 @@ class RMConnectorFO(FOComponent):
 
 	@handler("FOCommandComp",channel='connector')
 	def on_fo_command_comp(self,comp):
-#		pdb.set_trace()
 		if int(comp[u'nn'])==self._target:
 			ll=RacingTime.fromint(int(comp[u'll']))
 			pt=RacingTime.fromint(int(comp[u'pt']))
@@ -224,8 +220,6 @@ class RMConnectorFO(FOComponent):
 		if (H==self._hub):
 			if (M==u'newCommand'):
 				for c in A:
-					#sWideSpread': True, u'Command': {u'isOnline': False, u'RegNumber': None, u'RaceId': u'551263f0-4431-4211-af92-8fc93ec8f796'}, u'Method': u'OnlineStatus', u'Time': 631000} )>
-
 					self.fire(FOCommand(c[u'Method'],c[u'Time'],c[u'IsWideSpread'],c[u'Command']))
 			else:
 				raise ValueError("Unknown command %s" % [M])

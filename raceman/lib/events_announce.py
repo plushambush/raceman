@@ -1,51 +1,53 @@
 #coding=utf-8
-from circuits.core Event
+from circuits.core import Event
 
-	class RMAnnounceConnected(Event):
+class RMAnnounceConnected(Event):
 	"""
 	"""
-	class RMAnnounceDisconnected(Event):
-	"""
-	"""	
-	class RMAnnounceTrackSelected(Event):
+class RMAnnounceDisconnected(Event):
 	"""
 	"""	
-	class RMAnnounceKartSelected(Event):
+class RMAnnounceTrackSelected(Event):
 	"""
 	"""	
-	class RMAnnounceRivalSelected(Event):
+class RMAnnounceKartSelected(Event):
 	"""
 	"""	
-	class RMAnnounceRaceWaiting(Event):
+class RMAnnounceRivalSelected(Event):
 	"""
 	"""	
-	class RMAnnounceRaceStarted(Event):
+class RMAnnounceRaceWaiting(Event):
 	"""
 	"""	
-	class RMAnnounceRaceStopped(Event):
+class RMAnnounceRaceStarted(Event):
 	"""
 	"""	
-	class RMAnnounceRaceNoRace(Event):
+class RMAnnounceRaceFinished(Event):
 	"""
 	"""	
-	class RMAnnounceRaceNoData(Event):
-	"""
-	"""
-	class RMAnnounceKartLap(Event):
-	"""
-	"""
-	class RMAnnounceKartBestLap(Event):
+class RMAnnounceRaceNoRace(Event):
 	"""
 	"""	
-	class RMAnnounceKartLostBestLap(Event):
+class RMAnnounceRaceNoData(Event):
+	"""
+	"""
+class RMAnnounceTargetLap(Event):
+	"""
+	"""
+	
+class RMAnnounceRivalLap(Event):
+	"""
+	"""
+	
+class RMAnnounceKartBestLap(Event):
 	"""
 	"""	
-	class RMAnnounceKartLapBetter(Event):
+class RMAnnounceKartLostBestLap(Event):
 	"""
 	"""	
-	class RMAnnounceKartLapWorse(Event):
+class RMAnnounceKartLapBetter(Event):
 	"""
-	"""
-	class RMAnnounceRivalLap(Event):
+	"""	
+class RMAnnounceKartLapWorse(Event):
 	"""
 	"""

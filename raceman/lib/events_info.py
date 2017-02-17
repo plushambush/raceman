@@ -17,17 +17,21 @@ class RMInfoRaceNoRace(Event):
 class RMInfoRaceNoData(Event):
 	"""No data about race"""
 
-
+class RMInfoRaceHeartBeat(Event):
+	"""
+	"""
 	
 class RMInfoKartLap(Event):
 	"""Target kart finished lap
+	nn,is_target,is_rival,ll,bl,al,self._bbl,pt
 	kart num (integer)
 	is_target (boolean)
 	is_rival (boolean)
 	laptime (RacingTime)
-	sessiontime (RacingTime)
-	best time (RacingTime)
+	best lap time (RacingTime)
 	average time (RacingTime)
+	race best lap (RacingTIme)
+	Pass time (RacingTime)
 	"""
 
 class RMInfoKartBestLap(Event):

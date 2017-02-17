@@ -20,6 +20,7 @@ from raceman.lib.sound_pygame import *
 from raceman.lib.sound_base import *
 from raceman.lib.tts_sapi import *
 from raceman.lib.events_connector import *
+from raceman.lib.analyzer_fo import *
 from pdb import set_trace
 from os import environ
 
@@ -58,6 +59,7 @@ class Manager(Component):
 (Manager()+
 Debugger(IgnoreEvents=['read','_read','write','_write'])+
 RMConnectorFO()+
+RMAnalyzerFO()+
 RMTeller_SAPI()+
 RMTTS_SAPI()+
 RMSound_Pygame()

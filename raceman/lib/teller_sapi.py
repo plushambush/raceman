@@ -6,7 +6,7 @@ from raceman.lib.config import *
 class RMTeller_SAPI(Component):
 	"""Events - Phrases"""
 
-	@handler("RMAnnounceKartLap",channel='announce')
+	@handler("RMAnnounceTargetLap",channel='announce')
 	def _rmracelap(self,kartId,lapTime,sessionTime):
 		self.fireEvent(RMSoundSayMessage(u"Время круга %s." % lapTime.tostr(compact=True,tosay=True)))
 
@@ -23,35 +23,43 @@ class RMTeller_SAPI(Component):
 	def _rmannouncetrackselected(self,track):
 		self.fireEvent(RMSoundSayMessage(u"Добро пожаловать на трэк - %s. Устанавливаю связь с сервером." % track))
 
-	@handler("RMAnnounceTrackSelected",channel='announce')
+	@handler("RMAnnounceKartSelected",channel='announce')
 	def _rmannouncekartselected(self,kart):
 		self.fireEvent(RMSoundSayMessage(u"Слежение за картом %s." % kart))
+		
+	@handler("RMAnnounceRivalSelected",channel='announce')
+	def _rmannouncerivalselected(self,kart):
+		self.fireEvent(RMSoundSayMessage(u"Слежение за соперником. Карт  %s." % kart))		
 
 	@handler("RMAnnounceRaceWaiting", channel='announce')
 	def _rmannounceracewaiting(self):
 		self.fireEvent(RMSoundSayMessage(u"Ожидаем начала гонки."))
 
-	@handler("RMAnnounceRaceGoing",channel='announce')
-	def _rmannounceracegoing(self):
+	@handler("RMAnnounceRaceStarted",channel='announce')
+	def _rmannounceracestarted(self,raceid):
 		self.fireEvent(RMSoundPlayFile(SOUND_STARTSTOP))
 		self.fireEvent(RMSoundPlayBGM(SOUND_BGM))
 		self.fireEvent(RMSoundSayMessage(u"Гонка <emph>началась</emph>!"))
 		
 
-	@handler("RMAnnounceRaceStopped", channel='announce')
+	@handler("RMAnnounceRaceFinished", channel='announce')
 	def _rmannounceracefinish(self):
 		self.fireEvent(RMSoundPlayFile())
-		self.fireEvent(RMSoundSayMessage(u"Финиш гонки!"))
+		self.fireEvent(RMSoundSayMessage(u"Гонка <emph>закончена</emph>."))
 		self.fireEvent(RMSoundStopBGM())		
 
 	@handler("RMAnnounceRaceNoRace", channel='announce')
 	def _rmannounceracenorace(self):
-		self.fireEvent(RMSoundSayMessage(u"Гонка <emph>закончена</emph>."))
+		self.fireEvent(RMSoundSayMessage(u"Сейчас нет гонки."))
 		
 
 	@handler("RMAnnounceRaceNoData", channel='announce')
 	def _rmannounceracenodata(self):
 		self.fireEvent(RMSoundSayMessage(u"С сервера не поступают данные."))
+
+	@handler("RMAnnounceRaceDataBack", channel='announce')
+	def _rmannounceracenodata(self):
+		self.fireEvent(RMSoundSayMessage(u"Данные снова поступают."))
 
 
 	@handler("RMAnnounceKartBestLap", channel='announce')

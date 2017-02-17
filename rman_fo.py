@@ -11,20 +11,19 @@ from circuits.core.pollers import Poll,EPoll,KQueue,Select
 import sys
 from raceman.lib.rmstream import RMStream,RMStreamEvent
 from raceman.lib.rmdecoder import RMDecoder,RMEventHeartBeat,RMEventUnknown
-from raceman.lib.rmanalyzer import RMAnalyzer,RMAnalyzerTarget
-from raceman.lib.rmteller_sapi import RMTeller_SAPI
+from raceman.lib.teller_sapi import RMTeller_SAPI
 from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
 from signal import SIGHUP
 from exceptions import AttributeError
 from raceman.lib.config import config
-from raceman.lib.rmsound_pygame import *
-from raceman.lib.rmsound_base import *
-from raceman.lib.rmtts_sapi import *
-from raceman.lib.rmconnectorevents import *
+from raceman.lib.sound_pygame import *
+from raceman.lib.sound_base import *
+from raceman.lib.tts_sapi import *
+from raceman.lib.events_connector import *
 from pdb import set_trace
 from os import environ
 
-from raceman.lib.rmconnectorfo import RMConnectorFO
+from raceman.lib.connector_fo import RMConnectorFO
 
 class RMStartup(Event):
 	pass

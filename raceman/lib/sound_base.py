@@ -2,7 +2,7 @@
 from circuits import Event,Component
 from raceman.lib.eventqueue import *
 from raceman.lib.prio import *
-from raceman.lib.rmtts_base import *
+from raceman.lib.tts_base import *
 from raceman.lib.config import *
 import pdb
 

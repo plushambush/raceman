@@ -1,8 +1,8 @@
 from circuits import handler,Component,Event
 import socket
 from raceman.lib.config import *
-from raceman.lib.rmsound_base import *
-from raceman.lib.rmtts_base import *
+from raceman.lib.sound_base import *
+from raceman.lib.tts_base import *
 import pdb
 
 class RMTTS_SAPI(RMTTS):

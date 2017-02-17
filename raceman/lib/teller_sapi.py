@@ -1,6 +1,6 @@
 #coding=utf-8
 from circuits.core import Component,Event,handler
-from raceman.lib.rmsound_base import *
+from raceman.lib.sound_base import *
 from raceman.lib.config import *
 
 class RMTeller_SAPI(Component):

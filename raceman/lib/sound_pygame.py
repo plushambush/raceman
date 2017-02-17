@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from pygame import mixer
 from os import environ
-from raceman.lib.rmsound_base import *
+from raceman.lib.sound_base import *
 from raceman.lib.config import *
 from circuits import Component,Event,handler
 from StringIO import StringIO

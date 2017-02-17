@@ -1,5 +1,5 @@
 from circuits.core import Component,Event,handler
-from raceman.lib.rmqueue import RMQueue,RMQItem
+from raceman.lib.queue import RMQueue,RMQItem
 import Queue
 import sys
 import pdb

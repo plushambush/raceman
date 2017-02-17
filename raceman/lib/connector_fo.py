@@ -6,11 +6,11 @@ from circuits.web.client import request,Client
 from exceptions import ValueError
 from raceman.lib.racingtime import RacingTime
 from raceman.lib.config import *
-from raceman.lib.rminfoevents import *
-from raceman.lib.rmconnectorevents import *
+from raceman.lib.events_info import *
+from raceman.lib.events_connector import *
 import circuits  
 from raceman.lib.signalr import *
-import pdb
+from raceman.lib.rmcomponent import RMComponent
 				
 ###########################################################################################################				
 class FORaceDetectorConnect(Event):
@@ -42,7 +42,7 @@ class FORaceDetectorReady(Event):
 	"""
 
 
-class FORaceDetector(FOComponent):
+class FORaceDetector(RMComponent):
 
 	def __init__(self,*args,**kwargs):
 		super(FORaceDetector,self).__init__(*args,**kwargs)
@@ -152,7 +152,7 @@ class FORaceIsOver(Event):
 	- RaceId
 	"""
 	
-class RMConnectorFO(FOComponent):
+class RMConnectorFO(RMComponent):
 	def __init__(self,*args,**kwargs):
 		super(RMConnectorFO,self).__init__(channel='connector')
 		self.signalr=Signalr(channel='connector').register(self)

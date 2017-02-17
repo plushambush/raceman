@@ -6,7 +6,7 @@ from urlparse import urlparse
 import urllib
 import json  
 
-from raceman.lib.focomponent import FOComponent
+from raceman.lib.rmcomponent import RMComponent
 
 USERAGENT='Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0'  
 CLIENTPROTO='1.5'
@@ -82,7 +82,7 @@ class SignalrHubMessage(Event):
 		M
 	"""
 	
-class Signalr(FOComponent):  
+class Signalr(RMComponent):  
 		channel='signalr'
           
 		def __init__(self,channel=channel):  

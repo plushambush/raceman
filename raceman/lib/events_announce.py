@@ -1,9 +1,6 @@
 #coding=utf-8
 from circuits.core Event
 
-	class RMAnnounceKartLap(Event):
-	"""
-	"""
 	class RMAnnounceConnected(Event):
 	"""
 	"""
@@ -13,13 +10,16 @@ from circuits.core Event
 	class RMAnnounceTrackSelected(Event):
 	"""
 	"""	
-	class RMAnnounceTrackSelected(Event):
+	class RMAnnounceKartSelected(Event):
+	"""
+	"""	
+	class RMAnnounceRivalSelected(Event):
 	"""
 	"""	
 	class RMAnnounceRaceWaiting(Event):
 	"""
 	"""	
-	class RMAnnounceRaceGoing(Event):
+	class RMAnnounceRaceStarted(Event):
 	"""
 	"""	
 	class RMAnnounceRaceStopped(Event):
@@ -30,7 +30,10 @@ from circuits.core Event
 	"""	
 	class RMAnnounceRaceNoData(Event):
 	"""
-	"""	
+	"""
+	class RMAnnounceKartLap(Event):
+	"""
+	"""
 	class RMAnnounceKartBestLap(Event):
 	"""
 	"""	
@@ -41,3 +44,8 @@ from circuits.core Event
 	"""
 	"""	
 	class RMAnnounceKartLapWorse(Event):
+	"""
+	"""
+	class RMAnnounceRivalLap(Event):
+	"""
+	"""

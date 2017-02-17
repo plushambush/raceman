@@ -23,7 +23,11 @@ class FORaceDetectorRediscover(Event):
 
 
 class FORaceDetectorSubscribeTimer(Event):
-	""" Timer event
+	""" Timer event (subscribe)
+	"""
+
+class FORaceDetectorHBTimer(Event):
+	""" Timer event (heartbeats)
 	"""
 	
 class FORaceDetectorRaceStarted(Event):
@@ -36,6 +40,19 @@ class FORaceDetectorRaceStopped(Event):
 	Params:
 	- race id
 	"""
+
+class FORaceDetectorRaceNoData(Event):
+	""" Race stopped sending heartbeats	
+	Params:
+	- race id
+	"""
+
+class FORaceDetectorRaceDataBack(Event):
+	""" Race restored heartbeats	
+	Params:
+	- race id
+	"""
+
 	
 class FORaceDetectorReady(Event):
 	""" Ready and waiting for race
@@ -50,6 +67,8 @@ class FORaceDetector(RMComponent):
 		self._webclient=WebClient(channel='rd-webclient')
 		self._webclient.register(self)
 		self._subscribed_race=None
+		self._subscribe_timer=None
+		self._hb_timer=None
 		self.fire(FORaceDetectorReady())
 		
 
@@ -69,20 +88,35 @@ class FORaceDetector(RMComponent):
 		raceid=js[u'id']
 		self.fire(FOSubscribeRace(raceid))
 		self._subscribed_race=raceid
-		self._timer=Timer(10,FORaceDetectorSubscribeTimer()).register(self)
+		self._subscribe_timer=Timer(FO_RACEDETECTOR_SUBSCRIBE_TIMER,FORaceDetectorSubscribeTimer()).register(self)
 		
 	@handler("FOCommandHB")
 	def state_waiting(self,time):
 		if (self._state=='WAITING'):
 			self.change_state('ACTIVE')
-			self._timer.unregister()
+			self._subscribe_timer.unregister()
 			self.fire(FORaceDetectorRaceStarted(self._subscribed_race))
+			self._hb_timer=Timer(FO_RACEDETECTOR_HB_TIMER,FORaceDetectorHBTimer()).register(self)
+		elif (self._state=='ACTIVE'):
+			self._hb_timer.reset()
+		elif (self._state=='NODATA'):
+			self.change_state('ACTIVE')
+			self._hb_timer=Timer(FO_RACEDETECTOR_HB_TIMER,FORaceDetectorHBTimer()).register(self)
+			self.fire(FORaceDetectorRaceDataBack(self._subscribed_race))
+			
+			
+	@handler("FORaceDetectorHBTimer")
+	def on_hb_timer(self):
+		if self._state=='ACTIVE':
+			self.change_state('NODATA')
+			self._hb_timer.unregister(self)
+			self.fire(FORaceDetectorRaceNoData(self._subscribed_race))
 			
 	@handler("FORaceDetectorSubscribeTimer")
 	def state_changed(self):
 		if (self._state=='WAITING'):
 			self.change_state('WRONG')
-			self._timer.unregister()
+			self._subscribe_timer.unregister()
 			self.fire(FOUnsubscribeRace(self._subscribed_race))
 			self.fire(FORaceDetectorRediscover())
 		
@@ -177,17 +211,17 @@ class RMConnectorFO(RMComponent):
 	@handler("RMConnectorStart")
 	def on_rm_connector_start(self):
 		self.fire(SignalrStart(self._url,[self._hub]),self.signalr)
+		self.fire(RMConnectorStarted())		
 				
 	@handler("SignalrStarted",channel='connector')
 	def do_started(self,comp):
-		self.fire(RMConnectorStarted())
-		self.fire(RMInfoConnected(),'infoevents')
+		self.fire(RMConnectorConnected(),'infoevents')
 		self.fire(RMInfoRaceWaiting(),'infoevents')		
 		self.fire(FORaceDetectorConnect())
 
 	@handler("FORaceDetectorRaceStarted")
 	def on_fo_race_detector_race_started(self,raceid):
-		self.fire(RMInfoRaceGoing(),'infoevents')
+		self.fire(RMInfoRaceStarted(raceid),'infoevents')
 		
 	@handler("FORaceDetectorRaceStopped")	
 	def on_fo_race_detector_race_stopped(self,raceid):
@@ -200,6 +234,36 @@ class RMConnectorFO(RMComponent):
 		self._target=int(kartid)
 
 
+
+	@handler("SignalrHubMessage",channel='connector')
+	def on_signalr_hub_message(self,H,M,A):
+		if (H==self._hub):
+			if (M==u'newCommand'):
+				for c in A:
+					self.fire(FOCommand(c[u'Method'],c[u'Time'],c[u'IsWideSpread'],c[u'Command']))
+			else:
+				raise ValueError("Unknown command %s" % [M])
+		else:
+			raise ValueError("Unknown hub name %s" % [H])
+			
+	@handler("FOCommand",channel='connector')
+	def on_fo_command(self,method,time,iswidespread,command):
+		if (method==u'OnlineStatus'):
+			self.fire(FOCommandOnlineStatus(command[u'isOnline'],command[u'RegNumber'],command[u'RaceId']))
+		elif (method==u'hb'):
+			self.fire(FOCommandHB(time))
+		elif (method==u'Comp'):
+			self.fire(FOCommandComp(command))
+		elif (method==u'Session'):
+			self.fire(FOCommandSession(command))
+		else:
+			raise ValueError("Unknown FO Command %s",[method])
+
+
+
+	@handler("FOCommandHB")
+	def on_fo_command_hb(self,time):
+		self.fire(RMInfoRaceHeartBeat(RacingTime.fromint(time)),'infoevents')
 
 	@handler("FOCommandComp",channel='connector')
 	def on_fo_command_comp(self,comp):
@@ -215,27 +279,4 @@ class RMConnectorFO(RMComponent):
 			self.fire(RMInfoKartLap(self._target,ll,pt),'infoevents')
 
 
-	@handler("SignalrHubMessage",channel='connector')
-	def on_signalr_hub_message(self,H,M,A):
-		if (H==self._hub):
-			if (M==u'newCommand'):
-				for c in A:
-					self.fire(FOCommand(c[u'Method'],c[u'Time'],c[u'IsWideSpread'],c[u'Command']))
-			else:
-				raise ValueError("Unknown command %s" % [M])
-		else:
-			raise ValueError("Unknown hub name %s" % [H])
 			
-			
-	@handler("FOCommand",channel='connector')
-	def on_fo_command(self,method,time,iswidespread,command):
-		if (method==u'OnlineStatus'):
-			self.fire(FOCommandOnlineStatus(command[u'isOnline'],command[u'RegNumber'],command[u'RaceId']))
-		elif (method==u'hb'):
-			self.fire(FOCommandHB(time))
-		elif (method==u'Comp'):
-			self.fire(FOCommandComp(command))
-		elif (method==u'Session'):
-			self.fire(FOCommandSession(command))
-		else:
-			raise ValueError("Unknown FO Command %s",[method])

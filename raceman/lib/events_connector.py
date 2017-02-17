@@ -17,3 +17,7 @@ class RMConnectorStart(Event):
 class RMConnectorStarted(Event):
 	"""Connector started
 	"""
+
+class RMConnectorConnected(Event):
+	"""Connector is connected
+	"""

@@ -1,6 +1,6 @@
 from circuits.core import Event
 
-class RMInfoRaceGoing(Event):
+class RMInfoRaceStarted(Event):
 	"""Race is started
 	"""
 	
@@ -21,9 +21,13 @@ class RMInfoRaceNoData(Event):
 	
 class RMInfoKartLap(Event):
 	"""Target kart finished lap
-	kartid
+	kart num (integer)
+	is_target (boolean)
+	is_rival (boolean)
 	laptime (RacingTime)
 	sessiontime (RacingTime)
+	best time (RacingTime)
+	average time (RacingTime)
 	"""
 
 class RMInfoKartBestLap(Event):

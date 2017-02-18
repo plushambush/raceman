@@ -10,12 +10,12 @@ class RMTeller_SAPI(Component):
 	@handler("RMAnnounceTargetLap",channel='announce')
 	def _rmracelap(self,kartId,lapTime,sessionTime):
 		if lapTime<>RacingTime.fromint(0):
-			self.fireEvent(RMSoundSayMessage(u"Время круга %s." % lapTime.tostr(compact=True,tosay=True)))
+			self.fireEvent(RMSoundSayMessage(u"Время круга %s." % lapTime.tostr(compact=True,tosay=True,digits=config.profile['TIME_PRECISION'])))
 
 	@handler("RMAnnounceRivalLap",channel='announce')
 	def _rmrace_rival_lap(self,kartId,lapTime,sessionTime):
 		if lapTime<>RacingTime.fromint(0):
-			self.fireEvent(RMSoundSayMessage(u"Время соперника %s." % lapTime.tostr(compact=True,tosay=True)))
+			self.fireEvent(RMSoundSayMessage(u"Время соперника %s." % lapTime.tostr(compact=True,tosay=True,digits=config.profile['TIME_PRECISION'])))
 
 	@handler("RMAnnounceConnected",channel='announce')
 	def _connected(self):
@@ -71,7 +71,7 @@ class RMTeller_SAPI(Component):
 	@handler("RMAnnounceKartBestLap", channel='announce')
 	def _rmannouncekartbestlap(self):
 		self.fireEvent(RMSoundPlayFile(SOUND_ACHIEVE))
-		self.fireEvent(RMSoundSayMessage(u"Лучшее время гонки!"))
+		self.fireEvent(RMSoundSayMessage(u"Вы установили лучшее время гонки!"))
 
 	@handler("RMAnnounceKartLostBestLap", channel='announce')
 	def _rmannouncekartlostbestlap(self,kartId,kartTime):

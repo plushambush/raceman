@@ -65,6 +65,9 @@ class RacingTime(object):
 		return c
 
 
+	def digits(self,a,digits):
+		divs=float(pow(10,3-digits))
+		return int(round(float(a)/divs))
     
 
     
@@ -101,7 +104,7 @@ class RacingTime(object):
 			else:
 				return "+"
 
-	def tostr(self, compact=False,forcesign=False,tosay=False):
+	def tostr(self, compact=False,forcesign=False,tosay=False,digits=3):
 		if not tosay:
 			d1=":"
 			d2="."
@@ -109,16 +112,16 @@ class RacingTime(object):
 			d1="  "
 			d2="  "
 		if not compact:
-			return ("%s%02d" + d1 + "%02d" + d1 + "%02d" + d2 + "%03d") % (self.sign(forcesign),self.hour(),self.minute(),self.second(),self.ms())
+			return ("%s%02d" + d1 + "%02d" + d1 + "%02d" + d2 + "%0"+str(digits)+"d") % (self.sign(forcesign),self.hour(),self.minute(),self.second(),self.ms())
 		else:			
-			ms=self.ms()
-			if tosay and ms<100:
-				if ms<10:
-					_ms="0" +d2 + "0" + d2 + "%1d" %ms
+			ms=self.digits(self.ms(),digits)
+			if tosay and ms<pow(10,digits-1):
+				if ms<pow(10,digits-2):
+					_ms=(("0" +d2)*(digits-1) + "%1d") %ms
 				else:
-					_ms="0" +d2 + "%2d" % ms			
+					_ms=("0" +d2 + "%2d") % ms			
 			else:
-				_ms="%03d" % ms
+				_ms=("%0"+str(digits)+"d") % ms
 			ret=("%d" + d2 + "%s") % (self.second(),_ms)
 			if self.minute()<>0 or self.hour()<>0:
 				ret=("%d" + d1 +"%s") % (self.minute(),ret)

@@ -2,7 +2,10 @@ from circuits.core import Component,handler,Event,Timer
 from raceman.lib.events_info import *
 from raceman.lib.events_announce import *
 from raceman.lib.config import *
+import raceman.lib.config as config
 from raceman.lib.rmcomponent import RMComponent
+from raceman.lib.racingtime import RacingTime
+import pdb
 
 class RMAnalyzerAnnounceRace(Event):
 	""" Timer event to announce current race state"""
@@ -10,6 +13,7 @@ class RMAnalyzerAnnounceRace(Event):
 class RMAnalyzerFO(RMComponent):
 	def __init__(self,*args,**kwargs):
 		super(RMAnalyzerFO,self).__init__(*args,**kwargs)
+		self.bestlap=False
 		self._racetimer=Timer(FO_ANNOUNCE_PERIOD,RMAnalyzerAnnounceRace(),persist=True).register(self)
 
 
@@ -54,25 +58,40 @@ class RMAnalyzerFO(RMComponent):
 	@handler("RMAnalyzerAnnounceRace")
 	def on_analyzer_announce_race(self):
 		if self._state=='RACESTOPPED':
-			self.fire(RMAnnounceRaceFinished(None))
+			self.fire(RMAnnounceRaceFinished(None),'announce')
 		elif self._state=='RACEWAITING':
-			self.fire(RMAnnounceRaceWaiting())
+			self.fire(RMAnnounceRaceWaiting(),'announce')
 		elif self._state=='RACENORACE':
-			self.fire(RMAnnounceRaceNoRace())
+			self.fire(RMAnnounceRaceNoRace(),'announce')
 		elif self._state=='RACENODATA':
-			self.fire(RMAnnounceRaceNoData())
+			self.fire(RMAnnounceRaceNoData(),'announce')
 	
 	
-	@handler("RMInfoKartLap", channel='infoevents')
-	def on_target_lap(self,num,is_target,is_rival,lap,time,blap,alap,bblap):
-		if is_target:
-			self.fire(RMAnnounceTargetLap(num,lap,time))
 	
 	@handler("RMInfoKartLap", channel='infoevents')
-	def on_rival_lap(self,num,is_target,is_rival,lap,time,blap,alap,bblap):
+	def on_rival_lap(self,num,is_target,is_rival,lap,blap,alap,bblap,time):
 		if is_rival:
-			self.fire(RMAnnounceRivalLap(num,lap,time))
+			self.fire(RMAnnounceRivalLap(num,lap,time),'announce')
 
+
+	@handler("RMInfoKartLap", channel='infoevents')
+	def on_target_lap(self,num,is_target,is_rival,lap,blap,alap,bblap,time):
+		if is_target:
+			if lap<bblap:
+				self.fire(RMAnnounceKartBestLap(),'announce')
+				self.bestlap=True
+			elif (lap-bblap)<RacingTime.fromint(config.profile['BETTER_DELTA']):
+				self.fire(RMAnnounceKartLapBetter(alap),'announce')
+			elif (lap>alap):
+				self.fire(RMAnnounceKartLapWorse(alap))
+			self.fire(RMAnnounceTargetLap(num,lap,time),'announce')
+			
+	@handler("RMInfoKartLap", channel='infoevents')
+	def on_lost_bestlap(self,num,is_target,is_rival,lap,blap,alap,bblap,time):
+		if lap<bblap and not is_target and self.bestlap:
+			self.bestlap=False
+			self.fire(RMAnnounceKartLostBestLap(num,lap))
+			
 	
 class RMInfoKartLap(Event):
 	"""Target kart finished lap

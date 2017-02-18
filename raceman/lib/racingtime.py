@@ -1,4 +1,5 @@
 import re
+import raceman.lib.config as config
 
 _SECONDSMS=1000
 _MINUTESMS=60*_SECONDSMS

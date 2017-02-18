@@ -1,6 +1,6 @@
 from circuits import handler,Component,Event
 import socket
-from raceman.lib.config import *
+from raceman.lib.config_global import *
 from raceman.lib.rmsound_base import *
 from raceman.lib.rmtts_base import *
 

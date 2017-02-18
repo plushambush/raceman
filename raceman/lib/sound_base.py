@@ -3,6 +3,7 @@ from circuits import Event,Component
 from raceman.lib.eventqueue import *
 from raceman.lib.prio import *
 from raceman.lib.tts_base import *
+import raceman.lib.config as config
 from raceman.lib.config import *
 import pdb
 
@@ -117,7 +118,7 @@ class RMSoundStopBGM(Event):
 
 	
 def SoundFullPath(sound):
-	return RMS_SOUND_DIR+'/'+RMS_SOUND_THEME+'/'+sound	
+	return RMS_SOUND_DIR+'/'+config.profile['RMS_SOUND_THEME']+'/'+sound	
 	
 	
 class RMSound(Component):

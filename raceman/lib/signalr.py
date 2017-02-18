@@ -8,8 +8,6 @@ import json
 
 from raceman.lib.rmcomponent import RMComponent
 
-USERAGENT='Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0'  
-CLIENTPROTO='1.5'
 
 
 
@@ -85,8 +83,10 @@ class SignalrHubMessage(Event):
 class Signalr(RMComponent):  
 		channel='signalr'
           
-		def __init__(self,channel=channel):  
+		def __init__(self,useragent,proto='1.5',channel=channel):  
 			super(Signalr,self).__init__(channel=channel)
+			self._useragent=useragent
+			self._proto=proto
 			self.change_state('INITIALIZING')
 			self._webclient=WebClient(channel='signalr-webclient').register(self)
 			self._ws_counter=-1
@@ -110,9 +110,9 @@ class Signalr(RMComponent):
 			self._host=p.hostname
 			self._connectionData=urllib.quote(json.dumps([{'Name' : hubname} for hubname in hubs]))  		
 			self.change_state('STARTING')		
-			_urlpath=url+'/signalr/negotiate?clientProtocol='  + CLIENTPROTO +\
+			_urlpath=url+'/signalr/negotiate?clientProtocol='  + self._proto +\
 					'&connectionData=' + self._connectionData
-			self.fireEvent(WebRequest(method='GET',path=_urlpath,headers={'User-Agent':USERAGENT}),self._webclient)  
+			self.fireEvent(WebRequest(method='GET',path=_urlpath,headers={'User-Agent':self._useragent}),self._webclient)  
           
 		@handler("response",channel='signalr-webclient')  
 		def control_response(self,resp):  
@@ -123,9 +123,9 @@ class Signalr(RMComponent):
 				wsurl='ws://'+self._host+self._jsondata['Url'] + \
 						'/connect?connectionToken=' + urllib.quote(self._jsondata['ConnectionToken']) + \
 						'&connectionData=' + self._connectionData + \
-						'&transport=webSockets&clientProtocol=' + CLIENTPROTO  				
+						'&transport=webSockets&clientProtocol=' + self._proto
 				self._ws=WebSocketClient(wsurl,channel='ws-internal', wschannel='signalr-websocket',headers={
-					'User-Agent': USERAGENT,
+					'User-Agent': self._useragent,
 					'Host': self._host
                 }).register(self)  
 				
@@ -145,8 +145,8 @@ class Signalr(RMComponent):
 			_urlpath='/signalr/start?'+ \
 						'connectionToken=' + urllib.quote(self._jsondata['ConnectionToken']) + \
 						'&connectionData=' + self._connectionData + \
-						'&transport=webSockets&clientProtocol=' + CLIENTPROTO				
-			self.fireEvent(WebRequest(method='GET',path=self._urlbase+_urlpath,headers={'User-Agent':USERAGENT,'Host':self._host,'Accept-Encoding': 'identity'}),self._webclient)  
+						'&transport=webSockets&clientProtocol=' + self._proto
+			self.fireEvent(WebRequest(method='GET',path=self._urlbase+_urlpath,headers={'User-Agent':self._useragent,'Host':self._host,'Accept-Encoding': 'identity'}),self._webclient)  
 			
 			
 		@handler("SignalrInvoke")

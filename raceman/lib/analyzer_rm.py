@@ -1,7 +1,7 @@
 from circuits.core import Component,Event,handler,Timer
 import datetime
 from raceman.lib.racingtime import RacingTime
-from raceman.lib.config import *
+from raceman.lib.config_global import *
 import re
 
 class RMAnalyzerTarget(Event):

@@ -3,7 +3,8 @@
 from pygame import mixer
 from os import environ
 from raceman.lib.sound_base import *
-from raceman.lib.config import *
+from raceman.lib.config  import *
+import raceman.lib.config as config
 from circuits import Component,Event,handler
 from StringIO import StringIO
 
@@ -74,7 +75,7 @@ class RMSound_Pygame(RMSound):
 	@handler("RMSoundDriverPlayBGM")
 	def _on_rmsound_driver_play_bgm(self,filename):
 		mixer.music.load(filename)
-		mixer.music.set_volume(RMS_BGM_VOLUME)		
+		mixer.music.set_volume(config.profile['RMS_BGM_VOLUME'])		
 		mixer.music.play(-1)
 
 

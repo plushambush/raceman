@@ -41,7 +41,7 @@ class RMAnalyzerFO(RMComponent):
 		self.change_state('RACENORACE')
 
 	@handler("RMInfoRaceNoData", channel='infoevents')
-	def on_rminfo_race_nodata(self):
+	def on_rminfo_race_nodata(self,raceid):
 		self.fire(RMAnnounceRaceNoData(), 'announce')
 		self.push_state('RACENODATA')
 		
@@ -61,6 +61,18 @@ class RMAnalyzerFO(RMComponent):
 			self.fire(RMAnnounceRaceNoRace())
 		elif self._state=='RACENODATA':
 			self.fire(RMAnnounceRaceNoData())
+	
+	
+	@handler("RMInfoKartLap", channel='infoevents')
+	def on_target_lap(self,num,is_target,is_rival,lap,time,blap,alap,bblap):
+		if is_target:
+			self.fire(RMAnnounceTargetLap(num,lap,time))
+	
+	@handler("RMInfoKartLap", channel='infoevents')
+	def on_rival_lap(self,num,is_target,is_rival,lap,time,blap,alap,bblap):
+		if is_rival:
+			self.fire(RMAnnounceRivalLap(num,lap,time))
+
 	
 class RMInfoKartLap(Event):
 	"""Target kart finished lap

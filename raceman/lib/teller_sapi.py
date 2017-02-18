@@ -1,15 +1,21 @@
 #coding=utf-8
 from circuits.core import Component,Event,handler
 from raceman.lib.sound_base import *
-from raceman.lib.config import *
+from raceman.lib.config  import *
+from raceman.lib.racingtime import RacingTime
 
 class RMTeller_SAPI(Component):
 	"""Events - Phrases"""
 
 	@handler("RMAnnounceTargetLap",channel='announce')
 	def _rmracelap(self,kartId,lapTime,sessionTime):
-		self.fireEvent(RMSoundSayMessage(u"Время круга %s." % lapTime.tostr(compact=True,tosay=True)))
+		if lapTime<>RacingTime.fromint(0):
+			self.fireEvent(RMSoundSayMessage(u"Время круга %s." % lapTime.tostr(compact=True,tosay=True)))
 
+	@handler("RMAnnounceRivalLap",channel='announce')
+	def _rmrace_rival_lap(self,kartId,lapTime,sessionTime):
+		if lapTime<>RacingTime.fromint(0):
+			self.fireEvent(RMSoundSayMessage(u"Время соперника %s." % lapTime.tostr(compact=True,tosay=True)))
 
 	@handler("RMAnnounceConnected",channel='announce')
 	def _connected(self):

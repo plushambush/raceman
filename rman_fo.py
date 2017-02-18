@@ -15,7 +15,11 @@ from raceman.lib.teller_sapi import RMTeller_SAPI
 from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
 from signal import SIGHUP
 from exceptions import AttributeError
-from raceman.lib.config import config
+from raceman.lib.config import *
+import raceman.lib.config as config
+import raceman.lib.config_tracks as config_tracks
+import raceman.lib.config_profiles as config_profiles
+from raceman.lib.config_profiles import *
 from raceman.lib.sound_pygame import *
 from raceman.lib.sound_base import *
 from raceman.lib.tts_sapi import *
@@ -46,19 +50,31 @@ class Manager(Component):
 			self.stop()
 
 	@handler("RMStartup")
-	def on_startup(self,trackID,classID,kartID):
+	def on_startup(self, prog_name, userID='default_user', trackID='arena-fo', classID=1, targetN='0', rivalN='0'):
 		self.fire(RMParams('======STARTUP PARAMETERS:',sys.argv,environ.get('SDL_AUDIODRIVER','NO_DRIVER'),environ.get('SDL_DISKAUDIOFILE','NOFILE')))
-		self.fire(RMConnectorConfigure(config,classID,kartID))
+		config.track = config_tracks.tracks[trackID]		
+		config.profile=config_profiles.profiles[userID]
+		config.target=int(targetN)
+		config.rival=int(rivalN)
+		_connector=config.track['connector']
+		_connector().register(self)
 		self.fire(RMConnectorStart())
 
 	@handler("started")
 	def _started(self,komponent):
-		self.fireEvent(RMStartup(sys.argv[1],sys.argv[2],sys.argv[3]))
+		# parameters
+		# - userid		
+		# - trackid		
+		# - kart_class_id		
+		# - target kart N		
+		# - rival kart N		
+
+
+		self.fireEvent(RMStartup(*sys.argv))
 		
 
 (Manager()+
 Debugger(IgnoreEvents=['read','_read','write','_write'])+
-RMConnectorFO()+
 RMAnalyzerFO()+
 RMTeller_SAPI()+
 RMTTS_SAPI()+

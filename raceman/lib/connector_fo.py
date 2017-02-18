@@ -6,6 +6,7 @@ from circuits.web.client import request,Client
 from exceptions import ValueError
 from raceman.lib.racingtime import RacingTime
 from raceman.lib.config import *
+import raceman.lib.config as config
 from raceman.lib.events_info import *
 from raceman.lib.events_connector import *
 import circuits  
@@ -82,8 +83,8 @@ class FORaceDetector(RMComponent):
 	def make_web_request(self,url):
 		self.fire(WebRequest(\
 			method='GET',\
-			path='http://club.forzaonline.ru' + url,\
-			headers={'User-Agent':USERAGENT,'Host':'club.forzaonline.ru'}),self._webclient)		
+			path=config.track['url'] + url,\
+			headers={'User-Agent':FO_USERAGENT,'Host':config.track['host']}),self._webclient)		
 
 	@handler("FORaceDetectorConnect","FORaceDetectorRediscover")
 	def state_discovering(self):
@@ -138,7 +139,7 @@ class FORaceDetector(RMComponent):
 		
 	@handler("FOCommandOnlineStatus")
 	def state_stopped(self,online,regn,raceid):
-		if (online and raceid==self._subscribed_race and self._state=='ACTIVE'):
+		if (online and raceid==self._subscribed_race and  ((self._state=='ACTIVE') or (self._state=='NODATA'))):
 			self.change_state('STOPPED')
 			self.fire(FORaceDetectorRaceStopped(self._subscribed_race))
 
@@ -205,10 +206,10 @@ class FORaceIsOver(Event):
 class RMConnectorFO(RMComponent):
 	def __init__(self,*args,**kwargs):
 		super(RMConnectorFO,self).__init__(channel='connector')
-		self.signalr=Signalr(channel='connector').register(self)
+		self.signalr=Signalr(FO_USERAGENT, FO_CLIENTPROTO, channel='connector').register(self)
 		self.racedetector=FORaceDetector(channel='connector').register(self)
-		self._hub='RaceHub'
-		self._url='http://club.forzaonline.ru'
+		self._hub=config.track['hub']
+		self._url=config.track['url']
 		self._bbl=sys.maxint
 		self._target=None
 		self._rival=None
@@ -244,8 +245,11 @@ class RMConnectorFO(RMComponent):
 		
 	@handler("FORaceDetectorRaceStopped")	
 	def on_fo_race_detector_race_stopped(self,raceid):
-		self.fire(RMInfoRaceStopped(),'infoevents')
+		self.fire(RMInfoRaceStopped(raceid),'infoevents')
 		
+	@handler("FORaceDetectorRaceNoData")
+	def on_race_no_data(self,raceid):
+		self.fire(RMInfoRaceNoData(raceid),'infoevents')
 		
 	@handler("FORaceDetectorUpdateRaceData")
 	def on_update_race_data(self,data):
@@ -295,8 +299,8 @@ class RMConnectorFO(RMComponent):
 	@handler("FOCommandComp",channel='connector')
 	def on_fo_command_comp(self,comp):
 		nn=int(comp[u'nn'])
-		is_target=( nn==self._target )
-		is_rival=( nn==self._rival )
+		is_target=( nn==config.target )
+		is_rival=( nn==config.rival )
 		ll=RacingTime.fromint(int(comp[u'll']))
 		pt=RacingTime.fromint(int(comp[u'pt']))
 		bl=RacingTime.fromint(int(comp[u'bl']))
@@ -307,7 +311,6 @@ class RMConnectorFO(RMComponent):
 			self._bbl=bbl
 
 	def update_bl(self,data):
-		pdb.set_trace()
 		for lap in data[u'lastLaps']:
 			bl=int(lap[u'lt'])
 			if bl < self._bbl:

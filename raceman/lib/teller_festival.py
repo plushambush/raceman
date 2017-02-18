@@ -1,7 +1,7 @@
 #coding=utf-8
 from circuits.core import Component,Event,handler
 from raceman.lib.rmsound_base import *
-from raceman.lib.config import *
+from raceman.lib.config_global import *
 
 
 class RMTeller_Festival(Component):

@@ -1,3 +1,3 @@
 #!/bin/bash
-python ./rman_fo.py 1 1 $1
+python ./rman_fo.py default_user forza-fo 1 $1 $2
 rm raceman/lib/*.pyc

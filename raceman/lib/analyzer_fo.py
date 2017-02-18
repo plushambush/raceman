@@ -29,7 +29,7 @@ class RMAnalyzerFO(RMComponent):
 	
 	@handler ("RMInfoRaceStopped", channel='infoevents')
 	def on_rminfo_race_stopped(self,raceid):
-		self.fire(RMAnnounceRaceStopped(raceid), 'announce')
+		self.fire(RMAnnounceRaceStopped(), 'announce')
 		self.change_state('RACESTOPPED')
 
 
@@ -58,7 +58,7 @@ class RMAnalyzerFO(RMComponent):
 	@handler("RMAnalyzerAnnounceRace")
 	def on_analyzer_announce_race(self):
 		if self._state=='RACESTOPPED':
-			self.fire(RMAnnounceRaceFinished(None),'announce')
+			self.fire(RMAnnounceRaceStopped(),'announce')
 		elif self._state=='RACEWAITING':
 			self.fire(RMAnnounceRaceWaiting(),'announce')
 		elif self._state=='RACENORACE':

@@ -35,7 +35,7 @@ class RMTeller_SAPI(Component):
 		
 	@handler("RMAnnounceRivalSelected",channel='announce')
 	def _rmannouncerivalselected(self,kart):
-		self.fireEvent(RMSoundSayMessage(u"Слежение за соперником. Карт  %s." % kart))		
+		self.fireEvent(RMSoundSayMessage(u"Соперник карт  %s." % kart))		
 
 	@handler("RMAnnounceRaceWaiting", channel='announce')
 	def _rmannounceracewaiting(self):
@@ -48,9 +48,8 @@ class RMTeller_SAPI(Component):
 		self.fireEvent(RMSoundSayMessage(u"Гонка <emph>началась</emph>!"))
 		
 
-	@handler("RMAnnounceRaceFinished", channel='announce')
-	def _rmannounceracefinish(self):
-		self.fireEvent(RMSoundPlayFile())
+	@handler("RMAnnounceRaceStopped", channel='announce')
+	def _rmannounceracestopped(self):
 		self.fireEvent(RMSoundSayMessage(u"Гонка <emph>закончена</emph>."))
 		self.fireEvent(RMSoundStopBGM())		
 
@@ -61,17 +60,17 @@ class RMTeller_SAPI(Component):
 
 	@handler("RMAnnounceRaceNoData", channel='announce')
 	def _rmannounceracenodata(self):
-		self.fireEvent(RMSoundSayMessage(u"С сервера не поступают данные."))
+		self.fireEvent(RMSoundSayMessage(u"С сервера перестали поступать данные."))
 
 	@handler("RMAnnounceRaceDataBack", channel='announce')
-	def _rmannounceracenodata(self):
+	def _rmannounceracedataback(self):
 		self.fireEvent(RMSoundSayMessage(u"Данные снова поступают."))
 
 
 	@handler("RMAnnounceKartBestLap", channel='announce')
 	def _rmannouncekartbestlap(self):
 		self.fireEvent(RMSoundPlayFile(SOUND_ACHIEVE))
-		self.fireEvent(RMSoundSayMessage(u"Вы установили лучшее время гонки!"))
+		self.fireEvent(RMSoundSayMessage(u"Лучшее время гонки!"))
 
 	@handler("RMAnnounceKartLostBestLap", channel='announce')
 	def _rmannouncekartlostbestlap(self,kartId,kartTime):

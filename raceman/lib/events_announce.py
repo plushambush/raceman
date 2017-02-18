@@ -22,7 +22,7 @@ class RMAnnounceRaceWaiting(Event):
 class RMAnnounceRaceStarted(Event):
 	"""
 	"""	
-class RMAnnounceRaceFinished(Event):
+class RMAnnounceRaceStopped(Event):
 	"""
 	"""	
 class RMAnnounceRaceNoRace(Event):

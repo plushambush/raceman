@@ -6,11 +6,11 @@ class RMComponent(Component):
 		self._state=state
 		sys.stderr.write ("\n>>> %s changed state to %s  <<<\n\n" % (self.__class__.__name__,state))
 
-	def push_state(state):
+	def push_state(self,state):
 		self._statestack.append(self._state)
 		self.change_state(state)
 		
-	def pop_state():
+	def pop_state(self,):
 		st=self._statestack.pop()
 		self.change_state(st)
 
@@ -20,3 +20,5 @@ class RMComponent(Component):
 		super(RMComponent,self).__init__(*args,**kwargs)
 
 	
+	def debug(self,s):
+		sys.stderr.write(str)

@@ -58,7 +58,11 @@ class Manager(Component):
 		config.rival=int(rivalN)
 		_connector=config.track['connector']
 		_connector().register(self)
+		self.fire(RMAnnounceTrackSelected(config.track['name']),'announce')
 		self.fire(RMConnectorStart())
+		self.fire(RMAnnounceKartSelected(config.target),'announce')
+		if config.rival:
+			self.fire(RMAnnounceRivalSelected(config.rival),'announce')
 
 	@handler("started")
 	def _started(self,komponent):

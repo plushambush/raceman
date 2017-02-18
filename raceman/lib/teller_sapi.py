@@ -27,7 +27,7 @@ class RMTeller_SAPI(Component):
 
 	@handler("RMAnnounceTrackSelected",channel='announce')
 	def _rmannouncetrackselected(self,track):
-		self.fireEvent(RMSoundSayMessage(u"Добро пожаловать на трэк - %s. Устанавливаю связь с сервером." % track))
+		self.fireEvent(RMSoundSayMessage(u"Добро пожаловать на трэк  %s." % track))
 
 	@handler("RMAnnounceKartSelected",channel='announce')
 	def _rmannouncekartselected(self,kart):

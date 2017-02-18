@@ -99,7 +99,7 @@ tracks={
 				}
 			},
 			'forza-fo': {
-				'name':u"Форза",
+				'name':u"Forza",
 				'connector':RMConnectorFO,
 				'url':'http://club.forzaonline.ru',
 				'host':'club.forzaonline.ru',

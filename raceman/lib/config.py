@@ -10,7 +10,7 @@ FO_CLIENTPROTO='1.5'
 
 
 #RMSound configuration 
-RMS_SOUND_DIR='sounds/'
+RMS_SOUND_DIR='/usr/share/asterisk/sounds/custom/raceman/'
 
 
 RMS_CHANNEL_BGM=0

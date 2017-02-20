@@ -1,6 +1,8 @@
 # coding=windows-1251
 # ИМ-ЕЧ, РД-ЕЧ, РД-МН, ИМ-МН
 words={
+'ТРИЛЛИОН':	[0,	['ТРИЛЛИОН',	'ТРИЛЛИОНА',	'ТРИЛЛИОНОВ',	'ТРИЛЛИОНЫ']],
+'МИЛЛИАРД':	[0,	['МИЛЛИАРД',	'МИЛЛИАРДА',	'МИЛЛИАРДОВ',	'МИЛЛИАРДЫ']],
 'МИЛЛИОН':	[0,	['МИЛЛИОН',	'МИЛЛИОНА',	'МИЛЛИОНОВ',	'МИЛЛИОНЫ']],
 'ТЫСЯЧА' :	[1,	['ТЫСЯЧА', 	'ТЫСЯЧИ',	'ТЫСЯЧ',    	'ТЫСЯЧИ']],
 'СЕКУНДА':	[1,	['СЕКУНДА',	'СЕКУНДЫ',	'СЕКУНД',   	'СЕКУНДЫ']],
@@ -83,6 +85,15 @@ def spellword1000(number,word):
 def spell(number,word):
     tempn=number
     result=[]
+    
+    if (tempn / 1000000000000)>0:
+	result=result+spellword1000(tempn/1000000000000,'ТРИЛЛИОН')
+	tempn=tempn % 1000000000000
+    
+    if (tempn / 1000000000)>0:
+	result=result+spellword1000(tempn/1000000000,'МИЛЛИАРД')
+	tempn=tempn % 1000000000
+    
     if (tempn / 1000000)>0:
 	result=result+spellword1000(tempn/1000000,'МИЛЛИОН')
 	tempn=tempn % 1000000
@@ -92,5 +103,5 @@ def spell(number,word):
     result=result+spellword1000(tempn,word)
     return result
 
-print " ".join(spell(100,'СЕКУНДА'))
+print " ".join(spell(999556446782193,'СЕКУНДА'))
 	    

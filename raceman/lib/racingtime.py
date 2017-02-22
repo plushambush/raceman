@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import raceman.lib.config as config
 
@@ -160,9 +161,55 @@ class RacingTime(object):
 			dic['sign']=sign
 		return dic
           
-      
-    
+	def round(self,precision, optimistic=True):
+		if precision<3:
+			if optimistic:
+				return RacingTime.fromint(int(str(self._inttime)[:-(3-precision)]+"0"*(3-precision)))
+			else:
+				return RacingTime.fromint(int(round(float(self._inttime)/1000.0,precision)*1000.0))
+			
+		
+	def say_list(self, complete=False):
+	
+		words={1:'TENTH',2:'HUNDREDTH',3:'THOUSANDTH'}
+		result=[]
+		metric=3
+		ms=self.ms()
+		
+		while ms%10==0 and ms>0:
+			ms=ms/10
+			metric-=1
+		
+		if self.hour()<>0:
+			result=spell(self.hour(),'HOUR')
+			
+		if self.minute()<>0 or self.hour()<>0:
+			result+=spell(self.minute(),'MINUTE')
+		
+		result+=spell(self.second(),'SECOND')
+		
+		if ms==0:
+			if complete:
+				return result
+			else:
+				result=result[:-1]
+				result+=[u"РОВНО"]
+		else:	
+			result=result[:-1]		
 
-
+			if len(str(ms))==metric and not complete:
+				if metric==1:
+					result+=[u"И"]
+				result+= spell(ms,words[metric])[:-1]
+			else:
+				result+=[u"И"]
+				result+= spell(ms,words[metric])
+			if complete:
+				result+=[u"СЕКУНДЫ"]
+		return result
+		
+	def say(self,complete=False):
+		return " ".join(self.say_list(complete))
+			
         
 

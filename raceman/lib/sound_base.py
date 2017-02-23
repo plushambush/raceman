@@ -138,7 +138,8 @@ class RMSound(Component):
 		
 	@handler("RMSoundPlayFile")
 	def _on_rmsound_play_file(self,filename,rmprio=RM_PRIO_NORMAL):
-		self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayFileSync(SoundFullPath(filename)),rmprio),self._bus)
+		if filename<>'':
+			self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayFileSync(SoundFullPath(filename)),rmprio),self._bus)
 
 	@handler("RMSoundDriverPlayFileSync_complete")
 	def _on_rmsound_driver_play_file_sync_complete(self,event,*args,**kwargs):
@@ -169,7 +170,8 @@ class RMSound(Component):
 
 	@handler("RMSoundPlayBGM")
 	def _on_rmsound_play_bgm(self,filename):
-		self.fireEvent(RMSoundDriverPlayBGM(SoundFullPath(filename)))
+		if filename<>'':
+			self.fireEvent(RMSoundDriverPlayBGM(SoundFullPath(filename)))
 		
 	@handler("RMSoundStopBGM")
 	def _on_rmsound_stop_bgm(self):

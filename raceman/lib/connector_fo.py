@@ -213,6 +213,7 @@ class RMConnectorFO(RMComponent):
 		self._bbl=sys.maxint
 		self._target=None
 		self._rival=None
+		self._laps={}
 
 
 	@handler("FOSubscribeRace",channel='connector')
@@ -296,6 +297,18 @@ class RMConnectorFO(RMComponent):
 	def on_fo_command_hb(self,time):
 		self.fire(RMInfoRaceHeartBeat(RacingTime.fromint(time)),'infoevents')
 
+
+	def check_new_lap(self,nn,pt):
+		if self._laps.has_key(nn):
+			if self._laps[nn]<>pt:
+				self._laps[nn]=pt
+				return True
+			else:
+				return False
+		else:
+			self._laps[nn]=pt
+			return True
+	
 	@handler("FOCommandComp",channel='connector')
 	def on_fo_command_comp(self,comp):
 		nn=int(comp[u'nn'])
@@ -305,10 +318,12 @@ class RMConnectorFO(RMComponent):
 		pt=RacingTime.fromint(int(comp[u'pt']))
 		bl=RacingTime.fromint(int(comp[u'bl']))
 		al=RacingTime.fromint(int(comp[u'cs'][u'al']))
-		self.fire(RMInfoKartLap(nn,is_target,is_rival,ll,bl,al,RacingTime.fromint(self._bbl),pt),'infoevents')
-		bbl=int(comp[u'll'])
-		if bbl < self._bbl and bbl<>0:
-			self._bbl=bbl
+		
+		if self.check_new_lap(nn,pt):
+			self.fire(RMInfoKartLap(nn,is_target,is_rival,ll,bl,al,RacingTime.fromint(self._bbl),pt),'infoevents')
+			bbl=int(comp[u'll'])
+			if bbl < self._bbl and bbl<>0:
+				self._bbl=bbl
 
 	def update_bl(self,data):
 		for lap in data[u'lastLaps']:

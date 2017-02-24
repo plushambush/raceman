@@ -10,7 +10,7 @@ class RMTeller_SAPI(Component):
 	@handler("RMAnnounceTargetLap",channel='announce')
 	def _rmracelap(self,kartId,lapTime,sessionTime):
 		if lapTime<>RacingTime.fromint(0):
-			self.fire(RMSoundSayMessage(u"Время круга %s." % lapTime.round(config.profile['TIME_PRECISION']).say()))
+			self.fire(RMSoundSayMessage(u"Время %s." % lapTime.round(config.profile['TIME_PRECISION']).say()))
 
 	@handler("RMAnnounceRivalLap",channel='announce')
 	def _rmrace_rival_lap(self,kartId,lapTime,sessionTime):
@@ -19,15 +19,15 @@ class RMTeller_SAPI(Component):
 
 	@handler("RMAnnounceConnected",channel='announce')
 	def _connected(self):
-		self.fireEvent(RMSoundSayMessage(u"Установлена связь с сервером."))
+		self.fireEvent(RMSoundSayMessage(u"Установлено соединение."))
 
 	@handler("RMAnnounceDisconnected",channel='announce')
 	def _disconnected(self):
-		self.fireEvent(RMSoundSayMessage(u"Разорвана связь с сервером."))
+		self.fireEvent(RMSoundSayMessage(u"Разорвано соединение."))
 
 	@handler("RMAnnounceTrackSelected",channel='announce')
 	def _rmannouncetrackselected(self,track):
-		self.fireEvent(RMSoundSayMessage(u"Добро пожаловать на трэк  %s." % track))
+		self.fireEvent(RMSoundSayMessage(u"Выбран трэк  %s." % track))
 
 	@handler("RMAnnounceKartSelected",channel='announce')
 	def _rmannouncekartselected(self,kart):
@@ -60,7 +60,7 @@ class RMTeller_SAPI(Component):
 
 	@handler("RMAnnounceRaceNoData", channel='announce')
 	def _rmannounceracenodata(self):
-		self.fireEvent(RMSoundSayMessage(u"С сервера перестали поступать данные."))
+		self.fireEvent(RMSoundSayMessage(u"Перестали поступать данные."))
 
 	@handler("RMAnnounceRaceDataBack", channel='announce')
 	def _rmannounceracedataback(self):
@@ -75,7 +75,7 @@ class RMTeller_SAPI(Component):
 	@handler("RMAnnounceKartLostBestLap", channel='announce')
 	def _rmannouncekartlostbestlap(self,kartId,kartTime):
 		self.fireEvent(RMSoundPlayFile(SOUND_LOST))
-		self.fire(RMSoundSayMessage(u"Потеряно лучшее время гонки. Карт %s Время %s." % (kartId,kartTime.say())))
+		self.fire(RMSoundSayMessage(u"Потеряно лучшее время. Карт %s Время %s." % (kartId,kartTime.say())))
 
 	@handler("RMAnnounceKartLapBetter", channel='announce')
 	def _rmannouncekartlapbetter(self,avgtime):

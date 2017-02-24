@@ -1,4 +1,4 @@
-#coding=utf-8
+# -*- coding: utf-8 -*-
 from circuits.core import Component,Event,handler
 from raceman.lib.sound_base import *
 from raceman.lib.config  import *
@@ -10,12 +10,12 @@ class RMTeller_SAPI(Component):
 	@handler("RMAnnounceTargetLap",channel='announce')
 	def _rmracelap(self,kartId,lapTime,sessionTime):
 		if lapTime<>RacingTime.fromint(0):
-			self.fireEvent(RMSoundSayMessage(u"Время круга %s." % lapTime.tostr(compact=True,tosay=True,digits=config.profile['TIME_PRECISION'])))
+			self.fire(RMSoundSayMessage(u"Время круга %s." % lapTime.round(config.profile['TIME_PRECISION']).say()))
 
 	@handler("RMAnnounceRivalLap",channel='announce')
 	def _rmrace_rival_lap(self,kartId,lapTime,sessionTime):
 		if lapTime<>RacingTime.fromint(0):
-			self.fireEvent(RMSoundSayMessage(u"Время соперника %s." % lapTime.tostr(compact=True,tosay=True,digits=config.profile['TIME_PRECISION'])))
+			self.fire(RMSoundSayMessage(u"Время соперника %s." % lapTime.round(config.profile['TIME_PRECISION']).say()))
 
 	@handler("RMAnnounceConnected",channel='announce')
 	def _connected(self):
@@ -75,7 +75,7 @@ class RMTeller_SAPI(Component):
 	@handler("RMAnnounceKartLostBestLap", channel='announce')
 	def _rmannouncekartlostbestlap(self,kartId,kartTime):
 		self.fireEvent(RMSoundPlayFile(SOUND_LOST))
-		self.fireEvent(RMSoundSayMessage(u"Потеряно лучшее время гонки. Карт %s Время %s." % (kartId,kartTime.tostr(compact=True,tosay=True))))
+		self.fire(RMSoundSayMessage(u"Потеряно лучшее время гонки. Карт %s Время %s." % (kartId,kartTime.say())))
 
 	@handler("RMAnnounceKartLapBetter", channel='announce')
 	def _rmannouncekartlapbetter(self,avgtime):

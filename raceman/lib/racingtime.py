@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 import raceman.lib.config as config
+from numberspell import spell
+import pdb
 
 _SECONDSMS=1000
 _MINUTESMS=60*_SECONDSMS
@@ -209,7 +211,8 @@ class RacingTime(object):
 		return result
 		
 	def say(self,complete=False):
-		return " ".join(self.say_list(complete))
+		l=self.say_list(complete)
+		return u" ".join(l)
 			
         
 

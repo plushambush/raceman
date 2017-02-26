@@ -18,17 +18,17 @@ class RMSAPIServer(LineReceiver):
 		self.SAPI=win32com.client.Dispatch("SAPI.SpVoice")
 		self.Stream=win32com.client.Dispatch("SAPI.SpMemoryStream")
 		format=win32com.client.Dispatch("SAPI.SpAudioFormat")
-		format.Type=SAFT8kHz16BitMono
+		format.Type=SAFT22kHz16BitStereo
 		self.Stream.Format=format
 		self.SAPI.AudioOutputStream=self.Stream
 			
 	def lineReceived(self, line):
 		try:
-			encline=line.decode('cp1251').encode('cp866')
+			encline=line.decode('utf-8').encode('cp866')
 		except UnicodeEncodeError:
 			encline=line
 		print "Speak request:%s" % encline
-		self.SAPI.Speak(line, SPF_IS_XML)
+		self.SAPI.Speak(line.decode('utf-8'), SPF_IS_XML)
 		data=str(self.Stream.GetData())
 		self.transport.write(data)
 		self.transport.loseConnection()

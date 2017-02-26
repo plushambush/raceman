@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import raceman.lib.config as config
-from numberspell import spell
+from numberspell_static import spell
 import pdb
 
 _SECONDSMS=1000
@@ -169,6 +169,8 @@ class RacingTime(object):
 				return RacingTime.fromint(int(str(self._inttime)[:-(3-precision)]+"0"*(3-precision)))
 			else:
 				return RacingTime.fromint(int(round(float(self._inttime)/1000.0,precision)*1000.0))
+		else:
+			return self
 			
 		
 	def say_list(self, complete=False):
@@ -195,19 +197,19 @@ class RacingTime(object):
 				return result
 			else:
 				result=result[:-1]
-				result+=[u"РОВНО"]
+				result+=['zero']
 		else:	
 			result=result[:-1]		
 
 			if len(str(ms))==metric and not complete:
 				if metric==1:
-					result+=[u"И"]
+					result+=['and']
 				result+= spell(ms,words[metric])[:-1]
 			else:
-				result+=[u"И"]
+				result+=['and']
 				result+= spell(ms,words[metric])
 			if complete:
-				result+=[u"СЕКУНДЫ"]
+				result+=['second1']
 		return result
 		
 	def say(self,complete=False):

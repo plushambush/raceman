@@ -7,7 +7,7 @@ from raceman.lib.config  import *
 import raceman.lib.config as config
 from circuits import Component,Event,handler
 from StringIO import StringIO
-
+import pdb
 
 
 class RMSound_Pygame(RMSound):
@@ -33,6 +33,16 @@ class RMSound_Pygame(RMSound):
 		channel.play(sound)
 		while channel.get_busy():
 			self.flushEvents()
+
+
+	@handler("RMSoundDriverPlayArraySync")
+	def _on_rm_sound_driver_play_array_sync(self,parts):
+		channel=mixer.find_channel()
+		for f in parts:
+			sound=mixer.Sound(f)
+			channel.play(sound)
+			while channel.get_busy():
+				self.flushEvents()
 
 
 	@handler("RMSoundDriverPlayStreamAsync")

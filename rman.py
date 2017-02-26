@@ -11,7 +11,7 @@ from circuits.core.pollers import Poll,EPoll,KQueue,Select
 import sys
 from raceman.lib.rmstream import RMStream,RMStreamEvent
 from raceman.lib.rmdecoder import RMDecoder,RMEventHeartBeat,RMEventUnknown
-from raceman.lib.teller_sapi import RMTeller_SAPI
+from raceman.lib.teller_static import RMTeller_Static
 from raceman.lib.eventqueue import EQHandlerEngaged,EQHandlerAvailable,EQHandlerBusy,EQHaveEvent,EQEnqueueEvent
 from signal import SIGHUP
 from exceptions import AttributeError
@@ -22,7 +22,6 @@ import raceman.lib.config_profiles as config_profiles
 from raceman.lib.config_profiles import *
 from raceman.lib.sound_pygame import *
 from raceman.lib.sound_base import *
-from raceman.lib.tts_sapi import *
 from raceman.lib.events_connector import *
 from raceman.lib.analyzer_fo import *
 from pdb import set_trace
@@ -80,7 +79,6 @@ class Manager(Component):
 (Manager()+
 Debugger(IgnoreEvents=['read','_read','write','_write'],file=RMSYSTEM_LOGFILE)+
 RMAnalyzerFO()+
-RMTeller_SAPI()+
-RMTTS_SAPI()+
+RMTeller_Static()+
 RMSound_Pygame()
 ).run()

@@ -14,7 +14,7 @@ class RMTTS_SAPI(RMTTS):
 			sock=socket.socket()
 			sock.connect((TTS_SAPI_SERVER_HOST,TTS_SAPI_SERVER_PORT))
 #		pdb.set_trace()
-			sock.send(("%s\r\n" % message).encode('windows-1251'))
+			sock.send(("%s\r\n" % message).encode('utf-8'))
 	
 			msg=''
 			while True:		
@@ -28,3 +28,4 @@ class RMTTS_SAPI(RMTTS):
 				self.cache(message,msg)
 		if len(msg)>0:
 			self.fireEvent(RMSoundPlayBuffer(bytearray(msg),rmprio))
+		return msg

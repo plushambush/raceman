@@ -11,7 +11,7 @@ FO_CLIENTPROTO='1.5'
 
 #RMSound configuration 
 RMS_SOUND_DIR='/usr/share/asterisk/sounds/custom/raceman/'
-
+RMS_SOUND_TTS_DIR='/home/ricochet/Projects/Programming/raceman/sounds_tts/'
 
 RMS_CHANNEL_BGM=0
 RMS_CHANNEL_TICKER=1
@@ -25,7 +25,8 @@ RMS_SDL_AUDIOFILE='/dev/stdout'
 RMS_FREQUENCY=8000
 RMS_PYGAME_SAMPLESIZE=-16
 RMS_PYGAME_SAMPLECHANNELS=1
-RMS_PYGAME_FREQUENCY=8000
+RMS_PYGAME_FREQUENCY=22000
+RMS_FILE_EXTENSION='wav'
 
 #Sounds
 #SOUND_STARTSTOP='gong.wav'

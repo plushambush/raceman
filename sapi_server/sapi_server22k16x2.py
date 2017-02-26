@@ -23,11 +23,8 @@ class RMSAPIServer(LineReceiver):
 		self.SAPI.AudioOutputStream=self.Stream
 			
 	def lineReceived(self, line):
-		try:
-			encline=line.decode('utf-8').encode('cp866')
-		except UnicodeEncodeError:
-			encline=line
-		print "Speak request:%s" % encline
+		encline=line
+		print "Speak request:%s" % line
 		self.SAPI.Speak(line.decode('utf-8'), SPF_IS_XML)
 		data=str(self.Stream.GetData())
 		self.transport.write(data)

@@ -1,0 +1,60 @@
+# coding=windows-1251
+# ÈÌ-Å×, ÐÄ-Å×, ÐÄ-ÌÍ, ÈÌ-ÌÍ
+words={
+'TRILLION':		['m',	[u'ÒÐÈËËÈÎÍ',	u'ÒÐÈËËÈÎÍÀ',	u'ÒÐÈËËÈÎÍÎÂ',	u'ÒÐÈËËÈÎÍÛ']],
+'BILLION':		['m',	[u'ÌÈËËÈÀÐÄ',	u'ÌÈËËÈÀÐÄÀ',	u'ÌÈËËÈÀÐÄÎÂ',	u'ÌÈËËÈÀÐÄÛ']],
+'MILLION':		['m',	[u'ÌÈËËÈÎÍ',	u'ÌÈËËÈÎÍÀ',	u'ÌÈËËÈÎÍÎÂ',	u'ÌÈËËÈÎÍÛ']],
+'THOUSAND' :	['f',	[u'ÒÛÑß×À', 	u'ÒÛÑß×È',	u'ÒÛÑß×',    	u'ÒÛÑß×È']],
+'SECOND':		['f',	[u'ÑÅÊÓÍÄÀ',	u'ÑÅÊÓÍÄÛ',	u'ÑÅÊÓÍÄ',   	u'ÑÅÊÓÍÄÛ']],
+'MINUTE' :		['f',	[u'ÌÈÍÓÒÀ', 	u'ÌÈÍÓÒÛ',	u'ÌÈÍÓÒ',    	u'ÌÈÍÓÒÛ']],
+'HOUR':   		['m',	[u'×ÀÑ',		u'×ÀÑÀ',		u'×ÀÑÎÂ',	u'×ÀÑÛ']],
+'TENTH':		['f',	[u'ÄÅÑßÒÀß',	u'ÄÅÑßÒÎÉ',	u'ÄÅÑßÒÛÕ',	u'ÄÅÑßÒÛÅ']],
+'HUNDREDTH':	['f',	[u'ÑÎÒÀß',	u'ÑÎÒÎÉ',	u'ÑÎÒÛÕ',	u'ÑÎÒÛÅ']],
+'THOUSANDTH':	['f',	[u'ÒÛÑß×ÍÀß',	u'ÒÛÑß×ÍÎÉ',	u'ÒÛÑß×ÍÛÕ',	u'ÒÛÑß×ÍÛÅ']],
+'LAP':			['m',	[u'ÊÐÓÃ',	u'ÊÐÓÃÀ',	u'ÊÐÓÃÎÂ',	u'ÊÐÓÃÈ']]
+}
+
+wordforms  = {'m':[2,0,1,1,1],'f':[2,0,3,3,3]}
+
+
+def spell1000(number,gender):
+	    return ([("%d-%s-up" % (number,gender))],number%10)
+
+def spellword1000(number,word=None):
+	if word:
+		gender=words[word][0]
+	else:
+		gender='m'
+	(spelled,form)=spell1000(number,gender)
+	if form>4:
+		wordform=2
+	else:
+		wordform=wordforms[gender][form]
+	if word:
+		return spelled+["%s%s" % (word.lower(),wordform)]
+	else:
+		return spelled
+
+
+def spell(number,word=None):
+    tempn=number
+    result=[]
+    
+    if (tempn / 1000000000000)>0:
+	result=result+spellword1000(tempn/1000000000000,'TRILLION')
+	tempn=tempn % 1000000000000
+    
+    if (tempn / 1000000000)>0:
+	result=result+spellword1000(tempn/1000000000,'BILLION')
+	tempn=tempn % 1000000000
+    
+    if (tempn / 1000000)>0:
+	result=result+spellword1000(tempn/1000000,'MILLION')
+	tempn=tempn % 1000000
+    if (tempn / 1000) > 0:
+	result=result+spellword1000(tempn/1000,'THOUSAND') 
+	tempn=tempn % 1000
+    result=result+spellword1000(tempn,word)
+    return result
+
+	    

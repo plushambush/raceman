@@ -61,6 +61,15 @@ class RMSoundDriverPlayBufferAsync(Event):
 	pass	
 	
 	
+class RMSoundDriverPlayArraySync(Event):
+	"""Play array of sounds
+	Parameters:
+		parts - array of named (each name is a file name, being converted in full name)
+	"""
+	complete=True
+	pass
+	
+	
 	
 class RMSoundDriverPlayBGM(Event):
 	"""Play background music
@@ -115,11 +124,17 @@ class RMSoundPlayBGM(Event):
 	
 class RMSoundStopBGM(Event):
 	pass	
+	
+class RMSoundPlayArray(Event):
+	pass
 
 	
 def SoundFullPath(sound):
 	return RMS_SOUND_DIR+'/'+config.profile['RMS_SOUND_THEME']+'/'+sound	
 	
+def SoundTTSFullPath(sound):
+	fullsound=RMS_SOUND_TTS_DIR+'/'+config.profile['LANGUAGE']+'/'+sound+'.'+RMS_FILE_EXTENSION
+	return fullsound
 	
 class RMSound(Component):
 	def __init__(self,*args,**kwargs):
@@ -141,6 +156,16 @@ class RMSound(Component):
 		if filename<>'':
 			self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayFileSync(SoundFullPath(filename)),rmprio),self._bus)
 
+	@handler("RMSoundPlayArray")
+	def _on_rmsound_play_array(self,parts,rmprio=RM_PRIO_NORMAL):
+		if parts:
+			playparts=map(lambda f: SoundTTSFullPath(f),parts)
+			self.fireEvent(EQEnqueueEvent(RMSoundDriverPlayArraySync(playparts),rmprio),self._bus)
+
+	@handler("RMSoundDriverPlayArraySync_complete")
+	def  _on_rmsound_play_array_sync_complete(self,event,*args,**kwargs):
+		self.fireEvent(EQHandlerAvailable(),self._bus)
+	
 	@handler("RMSoundDriverPlayFileSync_complete")
 	def _on_rmsound_driver_play_file_sync_complete(self,event,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
@@ -160,7 +185,6 @@ class RMSound(Component):
 	@handler("RMSoundDriverPlayBufferSync_complete")
 	def _on_rmsound_driver_play_buffer_sync_complete(self,event,*args,**kwargs):
 		self.fireEvent(EQHandlerAvailable(),self._bus)
-
 
 
 

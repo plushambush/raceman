@@ -322,7 +322,7 @@ class RMConnectorFO(RMComponent):
 		if self.check_new_lap(nn,pt) and ll<>RacingTime.fromint(0):
 			self.fire(RMInfoKartLap(nn,is_target,is_rival,ll,bl,al,RacingTime.fromint(self._bbl),pt),'infoevents')
 			bbl=int(comp[u'll'])
-			if bbl < self._bbl and bbl<>RacingTime.fromint(0):
+			if bbl < self._bbl and bbl<>0:
 				self._bbl=bbl
 
 	def update_bl(self,data):

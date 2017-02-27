@@ -47,8 +47,6 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revision: 336716 $")
 #include "asterisk/translate.h"
 #include "asterisk/app.h"
 
-#include <libavutil/audioconvert.h>
-#include <libswresample/swresample.h>
 
 
 /*** DOCUMENTATION

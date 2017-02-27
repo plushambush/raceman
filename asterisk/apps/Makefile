@@ -11,7 +11,7 @@ DESTDIR =
 
 CFLAGS  += -Wextra -fPIC -DAST_MODULE=\"$(PROJ)\" -D_THREAD_SAFE -I. -I/usr/include -O2 -DICONV_CONST="" -D__DEBUG__ -D__MANAGER__ -D__APP__
 LDFLAGS += 
-LIBS     = -lavutil -lswresample
+LIBS     = 
 SOLINK   = -shared -Xlinker -x
 
 all	: clean $(PROJ).so

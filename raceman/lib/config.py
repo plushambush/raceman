@@ -1,6 +1,6 @@
 #coding=utf-8
 
-RMSYSTEM_LOGFILE='/var/log/raceman/raceman.log'
+RMSYSTEM_LOGFILE='/var/log/raceman.log'
 
 FO_RACEDETECTOR_SUBSCRIBE_TIMER=10
 FO_RACEDETECTOR_HB_TIMER=10

@@ -1,3 +1,6 @@
+run.sh
+build.sh
+log
 sounds/Makefile
 asterisk/Makefile
 cacheplay.sh

@@ -1,6 +1,4 @@
 FROM debian:latest
-ENV http_proxy=http://192.168.6.5:8080
-ENV https_proxy=http://192.168.6.5:8080
 RUN apt-get update && apt-get install -y \
 	python2.7-minimal \
 	asterisk \

@@ -1,4 +1,11 @@
-FROM raceman-base
+FROM debian:latest
+RUN apt-get update && apt-get install -y \
+	python2.7-minimal \
+	asterisk \
+	asterisk-dev \
+	python-pygame \
+	python-pip && \
+	pip install circuits
 
 COPY . /opt/raceman/
 COPY asterisk/etc /etc/asterisk/

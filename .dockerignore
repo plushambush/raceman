@@ -7,6 +7,8 @@ cacheplay.sh
 convert.sh
 dependencies
 Dockerfile
+Dockerfile.base
+*.rmsave
 .dockerignore
 Docs
 festival

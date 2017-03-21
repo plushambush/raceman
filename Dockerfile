@@ -16,4 +16,4 @@ VOLUME ["/var/log/raceman.log","/var/spool/asterisk/monitor"]
 ENV PYTHONPATH=/opt/raceman
 ENTRYPOINT ["asterisk"]
 CMD	["-vv"]
-EXPOSE 5060/UDP 10000-20000/UDP
+EXPOSE 5060/UDP 10000-10040/UDP

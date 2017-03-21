@@ -5,6 +5,7 @@ profiles={
 		'RMS_BGM_VOLUME': 0.2,
 		'TIME_PRECISION':2,
 		'BETTER_DELTA':300,
-		'LANGUAGE':'ru'
+		'LANGUAGE':'ru',
+		'REDISCOVER_ON_STOP':True
 	}
 }

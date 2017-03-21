@@ -142,6 +142,9 @@ class FORaceDetector(RMComponent):
 		if (online and raceid==self._subscribed_race and  ((self._state=='ACTIVE') or (self._state=='NODATA'))):
 			self.change_state('STOPPED')
 			self.fire(FORaceDetectorRaceStopped(self._subscribed_race))
+			if config.profile['REDISCOVER_ON_STOP']:
+				self.fire(FORaceDetectorRediscover())
+			
 
 	
 class FOCommand(Event):

@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM debian:jessie
 RUN apt-get update && apt-get install -y \
 	python2.7-minimal \
 	asterisk \

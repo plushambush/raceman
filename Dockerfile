@@ -12,7 +12,7 @@ COPY asterisk/etc /etc/asterisk/
 COPY asterisk/apps /usr/src/apps
 RUN make -C /usr/src/apps/ install && rm -rf /usr/src/apps && rm -rf /opt/raceman/asterisk
 
-VOLUME ["/var/log/raceman.log","/var/spool/asterisk/monitor"]
+VOLUME ["/var/log/","/var/spool/asterisk/monitor"]
 ENV PYTHONPATH=/opt/raceman
 ENTRYPOINT ["asterisk"]
 CMD	["-vv"]

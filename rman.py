@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-# 50.56.75.58:50006 - arena
-# 50.56.75.58:50002 - forza
-
 from circuits import Component,handler,Debugger,Event
 from circuits.web.loggers import Logger
 from circuits.core.pollers import Poll,EPoll,KQueue,Select

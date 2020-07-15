@@ -3,8 +3,8 @@ track=None
 from raceman.lib.connector_fo import RMConnectorFO
 tracks={
 			'arena': { 
-				'name':u"Арена",
-				'streamip':'50.56.75.58',
+				'name':u"Track 1",
+				'streamip':'127.0.0.1', # insert IP here
 				'streamport':50007,
 				'connector':None,
 				'park':{
@@ -65,8 +65,8 @@ tracks={
 				}
 			},
 			'forza': { 
-				'name':u"Форза",
-				'streamip':'50.56.75.58',
+				'name':u"Track2",
+				'streamip':'', # Insert IP here
 				'streamport':50002,
 				'park':{
 					'1': {
@@ -102,8 +102,8 @@ tracks={
 				'name':u"Forza",
 				'spell':'forza',
 				'connector':RMConnectorFO,
-				'url':'http://club.forzaonline.ru',
-				'host':'club.forzaonline.ru',
+				'url':'', #Insert url here
+				'host':'', #Insert host here
 				'signalr':'/signalr',
 				'hub':'RaceHub'
 			}
